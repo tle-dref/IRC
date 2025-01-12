@@ -7,7 +7,7 @@ SRCDIR		= src
 INCDIR		= inc
 OBJDIR		= obj
 
-SRC			= main
+SRC			= main Tokenisation
 SRCS		= $(addprefix $(SRCDIR)/, $(addsuffix .cpp, $(SRC)))
 OBJS		= $(addprefix $(OBJDIR)/, $(SRC:=.o))
 
