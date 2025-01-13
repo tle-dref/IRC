@@ -1,15 +1,18 @@
-NAME		= ircserv
+NAME        = ircserv
 
-CXX			= c++
-CXXFLAGS	= -Wall -Wextra -Werror -std=c++98 -I $(INCDIR)
+CXX         = c++
+CXXFLAGS    = -Wall -Wextra -Werror -std=c++98 -I $(INCDIR)
 
-SRCDIR		= src
-INCDIR		= inc
-OBJDIR		= obj
+SRCDIR      = src
+INCDIR      = inc
+OBJDIR      = obj
 
-SRC			= main Channel Client Command Tokenisation
-SRCS		= $(addprefix $(SRCDIR)/, $(addsuffix .cpp, $(SRC)))
-OBJS		= $(addprefix $(OBJDIR)/, $(SRC:=.o))
+SRC         = main Channel Client Command Tokenisation
+SRC_CMDS    = join kick mode msg nick part pass pong quit topic user
+
+SRCS        = $(addprefix $(SRCDIR)/, $(addsuffix .cpp, $(SRC)))
+SRCS_CMDS   = $(addprefix $(SRCDIR)/commands/, $(addsuffix .cpp, $(SRC_CMDS)))
+OBJS        = $(addprefix $(OBJDIR)/, $(SRC:=.o)) $(addprefix $(OBJDIR)/commands/, $(SRC_CMDS:=.o))
 
 all: $(NAME) uc
 
@@ -18,9 +21,13 @@ $(NAME): $(OBJS)
 	@echo "Compilation success !\n"
 
 $(OBJDIR):
-	@mkdir -p $(OBJDIR)
+	@mkdir -p $(OBJDIR) $(OBJDIR)/commands
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp | $(OBJDIR)
+	@echo "Compiling $<"
+	@$(CXX) $(CXXFLAGS) -c $< -o $@
+
+$(OBJDIR)/commands/%.o: $(SRCDIR)/commands/%.cpp | $(OBJDIR)/commands
 	@echo "Compiling $<"
 	@$(CXX) $(CXXFLAGS) -c $< -o $@
 

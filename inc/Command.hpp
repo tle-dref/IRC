@@ -63,5 +63,9 @@ void validateUser(ClientManager clients, const TokenisedCommand &cmd);
 void validateJoin(ClientManager clients, const TokenisedCommand &cmd);
 void validatePrivMsg(ClientManager clients, const TokenisedCommand &cmd);
 void validateQuit(ClientManager clients, const TokenisedCommand &cmd);
-void validatePing(ClientManager clients, const TokenisedCommand &cmd);
 void validatePong(ClientManager clients, const TokenisedCommand &cmd);
+void validateKick(ClientManager clients, const TokenisedCommand &cmd);
+void validateMode(ClientManager clients, const TokenisedCommand &cmd);
+void validatePass(ClientManager clients, const TokenisedCommand &cmd);
+void validateTopic(ClientManager clients, const TokenisedCommand &cmd);
+
