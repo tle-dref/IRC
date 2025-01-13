@@ -1,9 +1,9 @@
 #include "commandHandler.hpp"
+#include "ClientManager.hpp"
 #include "CommandList.hpp"
 #include "validation.hpp"
 #include <iostream>
 #include <sys/socket.h>
-#include "ClientManager.hpp"
 
 void dispatchCommand(ClientManager client, const TokenisedCommand &cmd) {
   int commandIndex = CommandList::findCommandIndex(cmd.getCommand());
@@ -11,48 +11,47 @@ void dispatchCommand(ClientManager client, const TokenisedCommand &cmd) {
   switch (commandIndex) {
   case 0: // NICK
     validateNick(client, cmd);
-	// doNick();
+    // doNick();
     break;
 
   case 1: // USER
     validateUser(client, cmd);
-	// doUser();
+    // doUser();
     break;
 
   case 2: // JOIN
     validateJoin(client, cmd);
-	// doJoin();
+    // doJoin();
     break;
 
   case 3: // PRIVMSG
     validatePrivMsg(client, cmd);
-	// doPrivMsg();
+    // doPrivMsg();
     break;
 
   case 4: // QUIT
     validateQuit(client, cmd);
-	// doQuit();
+    // doQuit();
     break;
 
   case 5: // PING
     validatePing(client, cmd);
-	// doPing();
+    // doPing();
     break;
 
   case 6: // PONG
     validatePong(client, cmd);
-	// doPong();
+    // doPong();
     break;
 
   default:
     handleInvalidCommand(client, cmd.getCommand());
     break;
   }
-
 }
 
 void handleInvalidCommand(ClientManager client, const std::string &command) {
-	(void)client;
-	(void)command;
-  // error_421();
+  throw std::runtime_error("error_421");
+  (void)client;
+  (void)command;
 }
