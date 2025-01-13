@@ -126,7 +126,8 @@ void validateJoin(ClientManager clients, const TokenisedCommand &cmd) {
   //     throw std::runtime_error("error_471"); // ERR_CHANNELISFULL
   //   }
 
-  //   if (channel->isInviteOnly() && !channel->isInvited(clients.getNickname()))
+  //   if (channel->isInviteOnly() &&
+  //   !channel->isInvited(clients.getNickname()))
   //   {
   //     throw std::runtime_error("error_473"); // ERR_INVITEONLYCHAN
   //   }

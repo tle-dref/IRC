@@ -31,10 +31,9 @@ public:
   // functions
   void addClient(Client user);
   void removeClient(int id);
-  Client *getClient(int id);
   void sendToAllUsers(Channel *channel, std::string message); // TODO
   void sendPrvMsg(Client *client, std::string message);       // TODO
-  void printClient(int id) const;
+  void printClient(int id) const; // Affiche les informations d'un client donné
   void printClients() const;
 
   // getter
@@ -42,6 +41,7 @@ public:
   std::string getNickname(int id);
   std::string getClientname(int id);
   std::string getHostname(int id);
+  Client *getClient(int id);
   const std::map<int, Client> &getClients() const;
   void updateNickname(int id, std::string nickname);
 
