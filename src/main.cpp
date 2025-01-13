@@ -6,6 +6,7 @@
 int main(int ac, char **av) {
   if (ac != 2) {
     std::cerr << "./ircserv <command>" << std::endl;
+	return 1;
   }
   std::string rawCommand = av[1];
 
