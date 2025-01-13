@@ -1,6 +1,7 @@
 #include "validation.hpp"
 #include <iostream>
 #include <stdexcept>
+#include "ClientManager.cpp"
 
 void validateNick(ClientManager client, const TokenisedCommand &cmd) {
   if (cmd.getArguments().empty()) {
@@ -10,7 +11,9 @@ void validateNick(ClientManager client, const TokenisedCommand &cmd) {
   if (nickname.length() > 9 || !isalpha(nickname[0])) {
     throw std::runtime_error("error_432");
   }
-  (void)client;
+  if (client.usernameExists(nickname)){
+	throw std::runtime_error("error_433");
+  }
 }
 
 void validateUser(ClientManager client, const TokenisedCommand &cmd) {

@@ -28,27 +28,27 @@ public:
     _clients.insert(std::make_pair(defaultClient.fd, defaultClient));
   }
   virtual ~ClientManager(){};
-  //   // functions
-  //   void addClient(int fd, Client user);
-  //   void removeClient(int fd);
-  //   Client *getClient(int fd);
-  //   // getter
-  //   int getFd(std::string username);
-  //   std::string getNickname(int fd);
-  //   std::string getClientname(int fd);
-  //   std::string getHostname(int fd);
-  //   const std::map<int, Client> &getClients() const;
-  //   void updateNickname(int fd, std::string nickname);
-  //   // setter
-  //   void setAuthenticated(int fd, bool isAuthenticated);
-  //   void setOperator(int fd, bool isOperator);
-  //   void setNickname(int fd, std::string nickname);
-  //   void setClientname(int fd, std::string username);
-  //   void setHostname(int fd, std::string hostname);
-  //   // check
-  //   bool isOperator(int fd);
-  //   bool userExists(int fd);
-  //   bool nicknameExists(std::string nickname);
-  //   bool usernameExists(std::string username);
-  //   bool isAuthenticated(int fd);
+    // functions
+    void addClient(int fd, Client user);
+    void removeClient(int fd);
+    Client *getClient(int fd);
+    // getter
+    int getFd(std::string username);
+    std::string getNickname(int fd);
+    std::string getClientname(int fd);
+    std::string getHostname(int fd);
+    const std::map<int, Client> &getClients() const;
+    void updateNickname(int fd, std::string nickname);
+    // setter
+    void setAuthenticated(int fd, bool isAuthenticated);
+    void setOperator(int fd, bool isOperator);
+    void setNickname(int fd, std::string nickname);
+    void setClientname(int fd, std::string username);
+    void setHostname(int fd, std::string hostname);
+    // check
+    bool isOperator(int fd);
+    bool userExists(int fd);
+    bool nicknameExists(std::string nickname);
+    bool usernameExists(std::string username);
+    bool isAuthenticated(int fd);
 };
