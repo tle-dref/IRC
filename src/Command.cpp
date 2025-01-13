@@ -17,68 +17,68 @@ const std::vector<std::string> &CommandList::getCommands() {
   return commands;
 }
 
-int CommandList::findCommandIndex(const std::string &command) {
-  const std::vector<std::string> &commands = getCommands();
-  for (size_t i = 0; i < commands.size(); ++i) {
-    if (commands[i] == command) {
+int CommandList::findCommandIndex(const std::string &cmd) {
+  const std::vector<std::string> &cmds = getCommands();
+  for (size_t i = 0; i < cmds.size(); ++i) {
+    if (cmds[i] == cmd) {
       return i;
     }
   }
   return -1;
 }
 
-void dispatchCommand(ClientManager client, const TokenisedCommand &cmd) {
+void dispatchCommand(ClientManager clients, const TokenisedCommand &cmd) {
   int commandIndex = CommandList::findCommandIndex(cmd.getCommand());
 
   switch (commandIndex) {
   case 0: // NICK
-    validateNick(client, cmd);
+    validateNick(clients, cmd);
     // doNick();
     break;
 
   case 1: // USER
-    validateUser(client, cmd);
+    validateUser(clients, cmd);
     // doUser();
     break;
 
   case 2: // JOIN
-    validateJoin(client, cmd);
+    validateJoin(clients, cmd);
     // doJoin();
     break;
 
   case 3: // PRIVMSG
-    validatePrivMsg(client, cmd);
+    validatePrivMsg(clients, cmd);
     // doPrivMsg();
     break;
 
   case 4: // QUIT
-    validateQuit(client, cmd);
+    validateQuit(clients, cmd);
     // doQuit();
     break;
 
   case 5: // PING
-    validatePing(client, cmd);
+    validatePing(clients, cmd);
     // doPing();
     break;
 
   case 6: // PONG
-    validatePong(client, cmd);
+    validatePong(clients, cmd);
     // doPong();
     break;
 
   default:
-    handleInvalidCommand(client, cmd.getCommand());
+    handleInvalidCommand(clients, cmd.getCommand());
     break;
   }
 }
 
-void handleInvalidCommand(ClientManager client, const std::string &command) {
+void handleInvalidCommand(ClientManager clients, const std::string &cmd) {
   throw std::runtime_error("error_421");
-  (void)client;
-  (void)command;
+  (void)clients;
+  (void)cmd;
 }
 
-void validateNick(ClientManager client, const TokenisedCommand &cmd) {
+void validateNick(ClientManager clients, const TokenisedCommand &cmd) {
   if (cmd.getArguments().empty()) {
     throw std::runtime_error("error_431");
   }
@@ -86,22 +86,22 @@ void validateNick(ClientManager client, const TokenisedCommand &cmd) {
   if (nickname.length() > 9 || !isalpha(nickname[0])) {
     throw std::runtime_error("error_432");
   }
-  if (client.usernameExists(nickname)) {
+  if (clients.usernameExists(nickname)) {
     throw std::runtime_error("error_433");
   }
 }
 
-void validateUser(ClientManager client, const TokenisedCommand &cmd) {
+void validateUser(ClientManager clients, const TokenisedCommand &cmd) {
   if (cmd.getArguments().size() < 4)
     throw std::runtime_error("error_461"); // ERR_NEEDMOREPARAMS
 
-  //   if (client.isRegister())
-  //     throw std::runtime_error("error_462");
+  // if (clients.isRegister())
+  //   throw std::runtime_error("error_462"); // ERR_ALREADYREGISTERED
 
-  (void)client;
+  (void)clients;
 }
 
-void validateJoin(ClientManager client, const TokenisedCommand &cmd) {
+void validateJoin(ClientManager clients, const TokenisedCommand &cmd) {
   if (cmd.getArguments().empty())
     throw std::runtime_error("error_461");
 
@@ -118,7 +118,7 @@ void validateJoin(ClientManager client, const TokenisedCommand &cmd) {
   //     throw std::runtime_error("error_403"); // ERR_NOSUCHCHANNEL
   //   }
 
-  //   if (channel->isBanned(client.getNickname())) {
+  //   if (channel->isBanned(clients.getNickname())) {
   //     throw std::runtime_error("error_474"); // ERR_BANNEDFROMCHAN
   //   }
 
@@ -126,7 +126,7 @@ void validateJoin(ClientManager client, const TokenisedCommand &cmd) {
   //     throw std::runtime_error("error_471"); // ERR_CHANNELISFULL
   //   }
 
-  //   if (channel->isInviteOnly() && !channel->isInvited(client.getNickname()))
+  //   if (channel->isInviteOnly() && !channel->isInvited(clients.getNickname()))
   //   {
   //     throw std::runtime_error("error_473"); // ERR_INVITEONLYCHAN
   //   }
@@ -135,41 +135,41 @@ void validateJoin(ClientManager client, const TokenisedCommand &cmd) {
   //     throw std::runtime_error("error_475"); // ERR_BADCHANNELKEY
   //   }
 
-  //   if (client.getJoinedChannelsCount() >= server.getMaxChannelsPerUser()) {
+  //   if (clients.getJoinedChannelsCount() >= server.getMaxChannelsPerUser()) {
   //     throw std::runtime_error("error_405"); // ERR_TOOMANYCHANNELS
   //   }
 
-  //   channel->addUser(client);
+  //   channel->addUser(clients);
 
   //   if (!channel->getTopic().empty()) {
-  //     client.sendMessage("rpl_332"); // RPL_TOPIC
+  //     clients.sendMessage("rpl_332"); // RPL_TOPIC
   //   }
 
-  //   client.sendMessage("rpl_353"); // RPL_NAMREPLY
-  //   client.sendMessage("rpl_366"); // RPL_ENDOFNAMES
+  //   clients.sendMessage("rpl_353"); // RPL_NAMREPLY
+  //   clients.sendMessage("rpl_366"); // RPL_ENDOFNAMES
 
-  (void)client;
+  (void)clients;
 }
 
-void validatePrivMsg(ClientManager client, const TokenisedCommand &cmd) {
+void validatePrivMsg(ClientManager clients, const TokenisedCommand &cmd) {
   if (cmd.getArguments().size() < 2)
     throw std::runtime_error("error_412");
-  (void)client;
+  (void)clients;
 }
 
-void validateQuit(ClientManager client, const TokenisedCommand &cmd) {
-  (void)client;
+void validateQuit(ClientManager clients, const TokenisedCommand &cmd) {
+  (void)clients;
   (void)cmd;
 }
 
-void validatePing(ClientManager client, const TokenisedCommand &cmd) {
+void validatePing(ClientManager clients, const TokenisedCommand &cmd) {
   if (cmd.getArguments().empty())
     throw std::runtime_error("error_409");
-  (void)client;
+  (void)clients;
 }
 
-void validatePong(ClientManager client, const TokenisedCommand &cmd) {
+void validatePong(ClientManager clients, const TokenisedCommand &cmd) {
   if (cmd.getArguments().empty())
     throw std::runtime_error("error_409");
-  (void)client;
+  (void)clients;
 }

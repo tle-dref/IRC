@@ -16,9 +16,14 @@ int main(int ac, char **av) {
       std::cerr << "Invalid command received." << std::endl;
       return 1;
     }
-    ClientManager client;
-    dispatchCommand(client, cmd);
+    ClientManager clients;
+	Client client1;
+	Client client2;
+	clients.addClient(client1);
+	clients.addClient(client2);
+    dispatchCommand(clients, cmd);
     cmd.print();
+	clients.printClients();
   } catch (const std::exception &e) {
     std::cerr << "Error: " << e.what() << std::endl;
   }

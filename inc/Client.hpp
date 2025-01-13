@@ -1,7 +1,7 @@
 #pragma once
+#include "Channel.hpp"
 #include <iostream>
 #include <map>
-#include "Channel.hpp"
 
 struct Channel;
 
@@ -29,31 +29,33 @@ public:
   virtual ~ClientManager(){};
 
   // functions
-  void addClient(int fd, Client user);
-  void removeClient(int fd);
-  Client *getClient(int fd);
+  void addClient(Client user);
+  void removeClient(int id);
+  Client *getClient(int id);
   void sendToAllUsers(Channel *channel, std::string message); // TODO
   void sendPrvMsg(Client *client, std::string message);       // TODO
+  void printClient(int id) const;
+  void printClients() const;
 
   // getter
   int getFd(std::string username);
-  std::string getNickname(int fd);
-  std::string getClientname(int fd);
-  std::string getHostname(int fd);
+  std::string getNickname(int id);
+  std::string getClientname(int id);
+  std::string getHostname(int id);
   const std::map<int, Client> &getClients() const;
-  void updateNickname(int fd, std::string nickname);
+  void updateNickname(int id, std::string nickname);
 
   // setter
-  void setAuthenticated(int fd, bool isAuthenticated);
-  void setOperator(int fd, bool isOperator);
-  void setNickname(int fd, std::string nickname);
-  void setClientname(int fd, std::string username);
-  void setHostname(int fd, std::string hostname);
+  void setAuthenticated(int id, bool isAuthenticated);
+  void setOperator(int id, bool isOperator);
+  void setNickname(int id, std::string nickname);
+  void setClientname(int id, std::string username);
+  void setHostname(int id, std::string hostname);
 
   // check
-  bool isOperator(int fd);
-  bool userExists(int fd);
+  bool isOperator(int id);
+  bool userExists(int id);
   bool nicknameExists(std::string nickname);
   bool usernameExists(std::string username);
-  bool isAuthenticated(int fd);
+  bool isAuthenticated(int id);
 };

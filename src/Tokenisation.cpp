@@ -25,6 +25,7 @@ void TokenisedCommand::print() const {
        it != _arguments.end(); ++it) {
     std::cout << "'" << *it << "' ";
   }
+  std::cout << std::endl;
 }
 
 bool TokenisedCommand::isValid() const { return !_command.empty(); }
