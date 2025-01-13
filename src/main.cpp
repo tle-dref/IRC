@@ -1,6 +1,6 @@
-#include "ClientManager.hpp"
+#include "Client.hpp"
 #include "Tokenisation.hpp"
-#include "commandHandler.hpp"
+#include "Command.hpp"
 #include <iostream>
 
 int main(int ac, char **av) {

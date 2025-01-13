@@ -7,7 +7,7 @@ SRCDIR		= src
 INCDIR		= inc
 OBJDIR		= obj
 
-SRC			= main Tokenisation commandHandler CommandList validation
+SRC			= main Channel Client Command Tokenisation
 SRCS		= $(addprefix $(SRCDIR)/, $(addsuffix .cpp, $(SRC)))
 OBJS		= $(addprefix $(OBJDIR)/, $(SRC:=.o))
 
