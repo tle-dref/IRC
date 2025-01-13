@@ -1,12 +1,19 @@
 #include "Client.hpp"
 #include "Tokenisation.hpp"
 
-void validateUser(ClientManager clients, const TokenisedCommand &cmd) {
-  if (cmd.getArguments().size() < 4)
-    throw std::runtime_error("error_461"); // ERR_NEEDMOREPARAMS
+bool validateUser(ClientManager clients, ChannelManager channels,
+                  const TokenisedCommand &cmd, const int idClient) {
+  if (cmd.getArguments().size() < 4){
+	std::cerr << "error_461 : ERR_NEEDMOREPARAMS" << std::endl;
+    return false;
+  }
 
   // if (clients.isRegister())
   //   throw std::runtime_error("error_462"); // ERR_ALREADYREGISTERED
 
   (void)clients;
+  (void)channels;
+  (void)cmd;
+  (void)idClient;
+  return true;
 }

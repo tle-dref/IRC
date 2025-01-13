@@ -1,7 +1,11 @@
 #include "Client.hpp"
 #include "Tokenisation.hpp"
 
-void validateQuit(ClientManager clients, const TokenisedCommand &cmd) {
+bool validateQuit(ClientManager clients, ChannelManager channels,
+                  const TokenisedCommand &cmd, const int idClient) {
   (void)clients;
+  (void)channels;
   (void)cmd;
+  (void)idClient;
+  return true;
 }

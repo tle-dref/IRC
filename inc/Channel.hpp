@@ -33,11 +33,11 @@ public:
   // functions
   void addChannel(std::string channelName, Channel channel);
   void removeChannel(std::string channelName);
-  Channel *getChannel(std::string channelName);
   void addUser(std::string channelName, Client user);
   void removeUser(std::string channelName, Client user);
 
   // getter
+  Channel *getChannel(std::string channelName);
   std::set<int> getUsers(std::string channelName);
   std::set<int> getOperators(std::string channelName);
   int getUserLimit(std::string channelName);

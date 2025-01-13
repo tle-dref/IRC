@@ -1,9 +1,15 @@
 #include "Client.hpp"
 #include "Tokenisation.hpp"
 
-void validatePrivMsg(ClientManager clients, const TokenisedCommand &cmd) {
-  if (cmd.getArguments().size() < 2)
-    throw std::runtime_error("error_412");
+bool validatePrivMsg(ClientManager clients, ChannelManager channels,
+                     const TokenisedCommand &cmd, const int idClient) {
+  if (cmd.getArguments().size() < 2){
+	std::cerr << "error_412 : ERR_NOTEXTTOSEND" << std::endl;
+	return false;
+  }
   (void)clients;
+  (void)channels;
+  (void)cmd;
+  (void)idClient;
+  return true;
 }
-

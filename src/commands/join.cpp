@@ -1,18 +1,23 @@
+#include "Channel.hpp"
 #include "Client.hpp"
 #include "Tokenisation.hpp"
 
-void validateJoin(ClientManager clients, const TokenisedCommand &cmd) {
-  if (cmd.getArguments().empty())
-    throw std::runtime_error("error_461");
+bool validateJoin(ClientManager clients, ChannelManager channels,
+                  const TokenisedCommand &cmd, const int idClient) {
+  if (cmd.getArguments().empty()) {
+    std::cerr << "error_461 : ERR_NEEDMOREPARAMS" << std::endl;
+    return false;
+  }
 
   const std::string &channelName = cmd.getArguments()[0];
 
   if (channelName.empty() || channelName[0] != '#' ||
       channelName.length() > 50) {
-    throw std::runtime_error("error_476"); // ERR_BADCHANMASK
+    std::cerr << "error_476 : ERR_BADCHANMASK" << std::endl;
+    return false;
   }
 
-  //   Channel *channel = server.findChannel(channelName);
+  // Channel *channel = server.findChannel(channelName);
 
   //   if (!channel) {
   //     throw std::runtime_error("error_403"); // ERR_NOSUCHCHANNEL
@@ -50,4 +55,8 @@ void validateJoin(ClientManager clients, const TokenisedCommand &cmd) {
   //   clients.sendMessage("rpl_366"); // RPL_ENDOFNAMES
 
   (void)clients;
+  (void)channels;
+  (void)cmd;
+  (void)idClient;
+  return true;
 }
