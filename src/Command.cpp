@@ -38,8 +38,9 @@ void dispatchCommand(ClientManager clients, ChannelManager channels,
 
   switch (commandIndex) {
   case 0: // NICK
-    validateNick(clients, channels, cmd, idClient);
-    // doNick();
+    if (validateNick(clients, channels, cmd, idClient)) {
+      // doNick();
+    }
     break;
 
   case 1: // USER
@@ -50,7 +51,7 @@ void dispatchCommand(ClientManager clients, ChannelManager channels,
 
   case 2: // JOIN
     if (validateJoin(clients, channels, cmd, idClient)) {
-      // doJoin();
+      doJoin(clients, channels, cmd, idClient);
     }
     break;
 
@@ -108,7 +109,8 @@ void dispatchCommand(ClientManager clients, ChannelManager channels,
   }
 }
 
-void handleInvalidCommand(ClientManager clients, const std::string &cmd, const int idClient) {
+void handleInvalidCommand(ClientManager clients, const std::string &cmd,
+                          const int idClient) {
   std::cerr << "error_421: ERR_UNKNOWNCOMMAND" << std::endl;
   (void)clients;
   (void)cmd;

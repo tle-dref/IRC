@@ -81,4 +81,27 @@ bool validatePass(ClientManager clients, ChannelManager channels,
 bool validateTopic(ClientManager clients, ChannelManager channels,
                    const TokenisedCommand &cmd, const int idClient);
 bool validatePart(ClientManager clients, ChannelManager channels,
-                   const TokenisedCommand &cmd, const int idClient);
+                  const TokenisedCommand &cmd, const int idClient);
+
+void doNick(ClientManager clients, ChannelManager channels,
+            const TokenisedCommand &cmd, const int idClient);
+void doUser(ClientManager clients, ChannelManager channels,
+            const TokenisedCommand &cmd, const int idClient);
+void doJoin(ClientManager clients, ChannelManager channels,
+            const TokenisedCommand &cmd, const int idClient);
+void doPrivMsg(ClientManager clients, ChannelManager channels,
+               const TokenisedCommand &cmd, const int idClient);
+void doQuit(ClientManager clients, ChannelManager channels,
+            const TokenisedCommand &cmd, const int idClient);
+void doPong(ClientManager clients, ChannelManager channels,
+            const TokenisedCommand &cmd, const int idClient);
+void doKick(ClientManager clients, ChannelManager channels,
+            const TokenisedCommand &cmd, const int idClient);
+void doMode(ClientManager clients, ChannelManager channels,
+            const TokenisedCommand &cmd, const int idClient);
+void doPass(ClientManager clients, ChannelManager channels,
+            const TokenisedCommand &cmd, const int idClient);
+void doTopic(ClientManager clients, ChannelManager channels,
+             const TokenisedCommand &cmd, const int idClient);
+void doPart(ClientManager clients, ChannelManager channels,
+            const TokenisedCommand &cmd, const int idClient);

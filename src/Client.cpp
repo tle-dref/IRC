@@ -1,7 +1,7 @@
 #include "Client.hpp"
 
 Client::Client()
-    : id(idGenerator()), nickname(""), username(""), hostname(""),
+    : id(idGenerator()), fd(id), nickname(""), username(""), hostname(""),
       isOperator(false), isAuthenticated(false) {}
 
 Client::Client(std::string nickname)

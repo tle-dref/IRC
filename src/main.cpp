@@ -16,15 +16,32 @@ int main(int ac, char **av) {
     std::cerr << "Invalid command received." << std::endl;
     return 1;
   }
-  
+
+  std::string n = "#myChannel";
+
   ClientManager clients;
+  Channel myChannel(n);
   ChannelManager channels;
   Client client1;
   Client client2;
+  client1.nickname = "myNickname";
+  client1.username = "myUsername";
+  client1.hostname = "myHostname";
+
   clients.addClient(client1);
   clients.addClient(client2);
+  channels.addChannel(n, myChannel);
+  channels.banUser(n, client1.id);
+  channels.unbanUser(n, client1.id);
+  channels.getBannedUser(n);
+  channels.setUserLimit(n, 2);
+  channels.addUser(n, &client1);
+  channels.addUser(n, &client2);
+
+  channels.setPassword(n,"ptdr");
   dispatchCommand(clients, channels, cmd, client1.id);
-  cmd.print();
+  dispatchCommand(clients, channels, cmd, client2.id);
+  //   cmd.print();
   clients.printClients();
 
   return 0;

@@ -7,7 +7,43 @@ Channel::Channel(std::string name)
 
 Channel::~Channel() {}
 
-int Channel::getNbrUsersOn() { return users.size(); }
+int ChannelManager::getNbrUsersOn(const std::string &chanName) {
+  return _channels[chanName].users.size();
+}
+
+bool ChannelManager::isBanned(const std::string &channelName, int id) {
+    std::set<int>::iterator it = _channels[channelName].banned.begin();
+    while (it != _channels[channelName].banned.end()) {
+        if (*it == id)
+            return (true);
+        it++;
+    }
+    return (false);
+}
+
+void ChannelManager::banUser(const std::string &chanName, int id) {
+  if (!isBanned(chanName, id)) {
+    _channels[chanName].banned.insert(id);
+    std::cout << "User with id " << id << " has been banned from channel"
+              << _channels[chanName].name << "." << std::endl;
+  }
+}
+
+void ChannelManager::getBannedUser(const std::string &chanName) {
+  std::set<int>::iterator it = _channels[chanName].banned.begin();
+  while (it != _channels[chanName].banned.end()) {
+    std::cout << *it << std::endl;
+    it++;
+  }
+}
+
+void ChannelManager::unbanUser(const std::string &chanName, int id) {
+   if (isBanned(chanName, id)) {
+    _channels[chanName].banned.erase(id);
+    std::cout << "User with id " << id << " has been unbanned from channel "
+              << _channels[chanName].name << "." << std::endl;
+  }
+}
 
 void ChannelManager::addChannel(std::string channelName, Channel channel) {
   _channels[channelName] = channel;
@@ -23,12 +59,10 @@ Channel *ChannelManager::getChannel(std::string channelName) {
   return &_channels[channelName];
 }
 
-void ChannelManager::addUser(std::string channelName, Client user) {
+void ChannelManager::addUser(std::string channelName, Client *user) {
   if (_channels.find(channelName) == _channels.end()) // mesonge
     addChannel(channelName, Channel(channelName));
-  if (isFull(channelName))
-    return; // error a preciser throw out of bound
-  _channels[channelName].users.insert(user.fd);
+  _channels[channelName].users.insert(user->fd);
 }
 
 void ChannelManager::removeUser(std::string channelName, Client user) {
@@ -122,7 +156,7 @@ bool ChannelManager::isPasswordProtected(std::string channelName) {
 
 bool ChannelManager::isFull(std::string channelName) {
   return (_channels[channelName].userLimit != -1 &&
-          _channels[channelName].users.size() >=
+          _channels[channelName].users.size() >
               (unsigned long long)_channels[channelName].userLimit);
 }
 
