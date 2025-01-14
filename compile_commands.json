@@ -1,0 +1,291 @@
+[
+ {
+  "directory": "/home/tle-dref/42/ft_irc",
+  "arguments": [
+   "c++",
+   "-Wall",
+   "-Wextra",
+   "-Werror",
+   "-std=c++98",
+   "-I",
+   "inc",
+   "-c",
+   "src/main.cpp",
+   "-o",
+   "obj/main.o"
+  ],
+  "file": "src/main.cpp"
+ },
+ {
+  "directory": "/home/tle-dref/42/ft_irc",
+  "arguments": [
+   "c++",
+   "-Wall",
+   "-Wextra",
+   "-Werror",
+   "-std=c++98",
+   "-I",
+   "inc",
+   "-c",
+   "src/Channel.cpp",
+   "-o",
+   "obj/Channel.o"
+  ],
+  "file": "src/Channel.cpp"
+ },
+ {
+  "directory": "/home/tle-dref/42/ft_irc",
+  "arguments": [
+   "c++",
+   "-Wall",
+   "-Wextra",
+   "-Werror",
+   "-std=c++98",
+   "-I",
+   "inc",
+   "-c",
+   "src/Client.cpp",
+   "-o",
+   "obj/Client.o"
+  ],
+  "file": "src/Client.cpp"
+ },
+ {
+  "directory": "/home/tle-dref/42/ft_irc",
+  "arguments": [
+   "c++",
+   "-Wall",
+   "-Wextra",
+   "-Werror",
+   "-std=c++98",
+   "-I",
+   "inc",
+   "-c",
+   "src/Command.cpp",
+   "-o",
+   "obj/Command.o"
+  ],
+  "file": "src/Command.cpp"
+ },
+ {
+  "directory": "/home/tle-dref/42/ft_irc",
+  "arguments": [
+   "c++",
+   "-Wall",
+   "-Wextra",
+   "-Werror",
+   "-std=c++98",
+   "-I",
+   "inc",
+   "-c",
+   "src/Tokenisation.cpp",
+   "-o",
+   "obj/Tokenisation.o"
+  ],
+  "file": "src/Tokenisation.cpp"
+ },
+ {
+  "directory": "/home/tle-dref/42/ft_irc",
+  "arguments": [
+   "c++",
+   "-Wall",
+   "-Wextra",
+   "-Werror",
+   "-std=c++98",
+   "-I",
+   "inc",
+   "-c",
+   "src/commands/join.cpp",
+   "-o",
+   "obj/commands/join.o"
+  ],
+  "file": "src/commands/join.cpp"
+ },
+ {
+  "directory": "/home/tle-dref/42/ft_irc",
+  "arguments": [
+   "c++",
+   "-Wall",
+   "-Wextra",
+   "-Werror",
+   "-std=c++98",
+   "-I",
+   "inc",
+   "-c",
+   "src/commands/kick.cpp",
+   "-o",
+   "obj/commands/kick.o"
+  ],
+  "file": "src/commands/kick.cpp"
+ },
+ {
+  "directory": "/home/tle-dref/42/ft_irc",
+  "arguments": [
+   "c++",
+   "-Wall",
+   "-Wextra",
+   "-Werror",
+   "-std=c++98",
+   "-I",
+   "inc",
+   "-c",
+   "src/commands/mode.cpp",
+   "-o",
+   "obj/commands/mode.o"
+  ],
+  "file": "src/commands/mode.cpp"
+ },
+ {
+  "directory": "/home/tle-dref/42/ft_irc",
+  "arguments": [
+   "c++",
+   "-Wall",
+   "-Wextra",
+   "-Werror",
+   "-std=c++98",
+   "-I",
+   "inc",
+   "-c",
+   "src/commands/msg.cpp",
+   "-o",
+   "obj/commands/msg.o"
+  ],
+  "file": "src/commands/msg.cpp"
+ },
+ {
+  "directory": "/home/tle-dref/42/ft_irc",
+  "arguments": [
+   "c++",
+   "-Wall",
+   "-Wextra",
+   "-Werror",
+   "-std=c++98",
+   "-I",
+   "inc",
+   "-c",
+   "src/commands/nick.cpp",
+   "-o",
+   "obj/commands/nick.o"
+  ],
+  "file": "src/commands/nick.cpp"
+ },
+ {
+  "directory": "/home/tle-dref/42/ft_irc",
+  "arguments": [
+   "c++",
+   "-Wall",
+   "-Wextra",
+   "-Werror",
+   "-std=c++98",
+   "-I",
+   "inc",
+   "-c",
+   "src/commands/part.cpp",
+   "-o",
+   "obj/commands/part.o"
+  ],
+  "file": "src/commands/part.cpp"
+ },
+ {
+  "directory": "/home/tle-dref/42/ft_irc",
+  "arguments": [
+   "c++",
+   "-Wall",
+   "-Wextra",
+   "-Werror",
+   "-std=c++98",
+   "-I",
+   "inc",
+   "-c",
+   "src/commands/pass.cpp",
+   "-o",
+   "obj/commands/pass.o"
+  ],
+  "file": "src/commands/pass.cpp"
+ },
+ {
+  "directory": "/home/tle-dref/42/ft_irc",
+  "arguments": [
+   "c++",
+   "-Wall",
+   "-Wextra",
+   "-Werror",
+   "-std=c++98",
+   "-I",
+   "inc",
+   "-c",
+   "src/commands/pong.cpp",
+   "-o",
+   "obj/commands/pong.o"
+  ],
+  "file": "src/commands/pong.cpp"
+ },
+ {
+  "directory": "/home/tle-dref/42/ft_irc",
+  "arguments": [
+   "c++",
+   "-Wall",
+   "-Wextra",
+   "-Werror",
+   "-std=c++98",
+   "-I",
+   "inc",
+   "-c",
+   "src/commands/quit.cpp",
+   "-o",
+   "obj/commands/quit.o"
+  ],
+  "file": "src/commands/quit.cpp"
+ },
+ {
+  "directory": "/home/tle-dref/42/ft_irc",
+  "arguments": [
+   "c++",
+   "-Wall",
+   "-Wextra",
+   "-Werror",
+   "-std=c++98",
+   "-I",
+   "inc",
+   "-c",
+   "src/commands/topic.cpp",
+   "-o",
+   "obj/commands/topic.o"
+  ],
+  "file": "src/commands/topic.cpp"
+ },
+ {
+  "directory": "/home/tle-dref/42/ft_irc",
+  "arguments": [
+   "c++",
+   "-Wall",
+   "-Wextra",
+   "-Werror",
+   "-std=c++98",
+   "-I",
+   "inc",
+   "-c",
+   "src/commands/user.cpp",
+   "-o",
+   "obj/commands/user.o"
+  ],
+  "file": "src/commands/user.cpp"
+ },
+ {
+  "directory": "/home/tle-dref/42/ft_irc",
+  "arguments": [
+   "c++",
+   "-Wall",
+   "-Wextra",
+   "-Werror",
+   "-std=c++98",
+   "-I",
+   "inc",
+   "-c",
+   "src/Server.cpp",
+   "-o",
+   "obj/Server.o"
+  ],
+  "file": "src/Server.cpp"
+ }
+]

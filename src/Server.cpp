@@ -22,9 +22,9 @@
 #include <netinet/in.h>
 #include <sys/epoll.h>
 #include <unistd.h>
-#include "Client.hpp"
 #include <map>
 #include <sstream>
+#include "Client.hpp"
 #include "Tokenisation.hpp"
 #include "Command.hpp"
 
@@ -169,7 +169,7 @@ void Server::acceptNewClient()
 	// Ajouter le client au conteneur de gestion (map)
 	_clients[client_fd] = newClient;
 	std::cout << "Nouveau client connecté : " << newClient->hostname << std::endl;
-	_serv._clientManager.addClient(*newClient);
+	_serv._clientManager.addClient(newClient);
 }
 
 void Server::handleClientMessage(int fd)
@@ -269,7 +269,7 @@ void Server::handleClientMessage(int fd)
 			return;
 		}
 		// Envoyer le message de bienvenue
-		std::string welcomeMsg = 
+		std::string welcomeMsg =
 			":localhost 001 " + client->nickname + " :Welcome to the IRC server\r\n" +
 			":localhost 002 " + client->nickname + " :Your host is localhost, running version 1.0\r\n" +
 			":localhost 003 " + client->nickname + " :This server was created today\r\n" +
@@ -296,4 +296,3 @@ void Server::handleClientMessage(int fd)
 
     }
 }
-

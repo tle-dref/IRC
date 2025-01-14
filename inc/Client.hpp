@@ -20,14 +20,14 @@ struct Client {
 
 class ClientManager {
 private:
-  std::map<int, Client> _clients;
+  std::map<int, Client*> _clients;
 
 public:
   ClientManager(){};
   virtual ~ClientManager(){};
 
   // functions
-  void addClient(Client user);
+  void addClient(Client *user);
   void removeClient(int fd);
   void sendToAllUsers(Channel *channel, std::string message); // TODO
   void sendPrvMsg(Client *client, std::string message);       // TODO
@@ -40,7 +40,7 @@ public:
   std::string getClientname(int fd);
   std::string getHostname(int fd);
   Client *getClient(int fd);
-  const std::map<int, Client> &getClients() const;
+  const std::map<int, Client*> &getClients() const;
   void updateNickname(int fd, std::string nickname);
 
   // setter

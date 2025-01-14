@@ -63,9 +63,9 @@ void dispatchCommand(ClientManager clients, ChannelManager channels,
     break;
 
   case 4: // QUIT
-    if (validateQuit(clients, channels, cmd, fd)) {
-      // doQuit();
-    }
+    // if (validateQuit(clients, channels, cmd, fd)) {
+    //   // doQuit();
+    // }
     break;
 
   case 5: // PING
@@ -75,9 +75,9 @@ void dispatchCommand(ClientManager clients, ChannelManager channels,
     break;
 
   case 6: // KICK
-    if (validateKick(clients, channels, cmd, fd)) {
-      // doKick();
-    }
+    // if (validateKick(clients, channels, cmd, fd)) {
+    //   // doKick();
+    // }
     break;
 
   case 7: // MODE

@@ -49,14 +49,14 @@ bool validateJoin(ClientManager clients, ChannelManager channels,
 }
 
 void doJoin(ClientManager clients, ChannelManager channels,
-            const TokenisedCommand &cmd, int idClient) {
+            const TokenisedCommand &cmd, int fdClient) {
 
   std::string channelName = cmd.getArguments()[0];
   if (channels.getChannel(channelName) == NULL) {
     channels.addChannel(channelName, Channel(channelName));
-	channels.addOperator(channelName, clients.getClient(idClient));
+	channels.addOperator(channelName, clients.getClient(fdClient));
   }
-  channels.addUser(channelName, clients.getClient(idClient));
+  channels.addUser(channelName, clients.getClient(fdClient));
 
   std::set<int> users = channels.getUsers(channelName);
   std::set<int>::iterator it = users.begin();
@@ -64,6 +64,8 @@ void doJoin(ClientManager clients, ChannelManager channels,
     std::cout << "user : " << *it << " is in " << channelName << std::endl;
     it++;
   }
+
+  channels.notifyChannel(":caca JOIN " + channelName + "\n", channelName);
 
   //   if (!channel->getTopic().empty()) {
   //     clients.sendMessage("rpl_332"); // RPL_TOPIC

@@ -66,10 +66,10 @@
 
 //     // 4) Dispatcher la commande
 //     //    (Dans votre logique, vous devrez peut-être identifier
-//     //     quel client FD/ID exécute la commande. Ici, on utilise
-//     //     l'ID de client1 comme exemple.)
+//     //     quel client FD/fd exécute la commande. Ici, on utilise
+//     //     l'fd de client1 comme exemple.)
 //     // ----------------------------------------------------------------
-//     dispatchCommand(clients, channels, cmd, client1.id);
+//     dispatchCommand(clients, channels, cmd, client1.fd);
 
 //     // 5) (Optionnel) Vous pouvez afficher les clients, channels, etc.
 //     // ----------------------------------------------------------------
@@ -95,7 +95,7 @@ int	main(int argc, char **argv)
 	std::string password = argv[2];
 	ClientManager clients;
 	ChannelManager channels;
-	
+
 	Server server(port, password, clients, channels);
 	server.run();
 	return (0);
