@@ -52,6 +52,10 @@ void doJoin(ClientManager clients, ChannelManager channels,
             const TokenisedCommand &cmd, int idClient) {
 
   std::string channelName = cmd.getArguments()[0];
+  if (channels.getChannel(channelName) == NULL) {
+    channels.addChannel(channelName, Channel(channelName));
+	channels.addOperator(channelName, clients.getClient(idClient));
+  }
   channels.addUser(channelName, clients.getClient(idClient));
 
   std::set<int> users = channels.getUsers(channelName);

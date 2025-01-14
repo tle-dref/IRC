@@ -37,6 +37,7 @@ public:
   void removeUser(std::string channelName, Client user);
   void banUser(const std::string &chanName, int id);
   void unbanUser(const std::string &chanName, int id);
+  void addOperator(std::string channelName, Client *user);
 
   // getter
   int getNbrUsersOn(const std::string &channelName);

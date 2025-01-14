@@ -2,11 +2,11 @@
 
 Client::Client()
     : id(idGenerator()), fd(id), nickname(""), username(""), hostname(""),
-      isOperator(false), isAuthenticated(false) {}
+      isAuthenticated(false) {}
 
 Client::Client(std::string nickname)
     : id(idGenerator()), nickname(nickname), username(""), hostname(""),
-      isOperator(false), isAuthenticated(false) {}
+      isAuthenticated(false) {}
 
 Client::~Client() {}
 
@@ -36,7 +36,6 @@ void ClientManager::printClient(int id) const {
   std::cout << "Nickname: " << client.nickname << std::endl;
   std::cout << "Username: " << client.username << std::endl;
   std::cout << "Hostname: " << client.hostname << std::endl;
-  std::cout << "Operator: " << (client.isOperator ? "Yes" : "No") << std::endl;
   std::cout << "Authenticated: " << (client.isAuthenticated ? "Yes" : "No")
             << std::endl;
 }
@@ -84,7 +83,6 @@ const std::map<int, Client> &ClientManager::getClients() const {
   return _clients;
 }
 // ------------------checkers------------------
-bool ClientManager::isOperator(int id) { return _clients[id].isOperator; }
 
 bool ClientManager::usernameExists(std::string username) {
   std::map<int, Client>::iterator it = _clients.begin();
@@ -116,10 +114,6 @@ bool ClientManager::isAuthenticated(int id) {
 // ------------------setters------------------
 void ClientManager::setAuthenticated(int id, bool isAuthenticated) {
   _clients[id].isAuthenticated = isAuthenticated;
-}
-
-void ClientManager::setOperator(int id, bool isOperator) {
-  _clients[id].isOperator = isOperator;
 }
 
 void ClientManager::setNickname(int id, std::string nickname) {

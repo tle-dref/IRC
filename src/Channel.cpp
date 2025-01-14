@@ -12,13 +12,13 @@ int ChannelManager::getNbrUsersOn(const std::string &chanName) {
 }
 
 bool ChannelManager::isBanned(const std::string &channelName, int id) {
-    std::set<int>::iterator it = _channels[channelName].banned.begin();
-    while (it != _channels[channelName].banned.end()) {
-        if (*it == id)
-            return (true);
-        it++;
-    }
-    return (false);
+  std::set<int>::iterator it = _channels[channelName].banned.begin();
+  while (it != _channels[channelName].banned.end()) {
+    if (*it == id)
+      return (true);
+    it++;
+  }
+  return (false);
 }
 
 void ChannelManager::banUser(const std::string &chanName, int id) {
@@ -38,11 +38,15 @@ void ChannelManager::getBannedUser(const std::string &chanName) {
 }
 
 void ChannelManager::unbanUser(const std::string &chanName, int id) {
-   if (isBanned(chanName, id)) {
+  if (isBanned(chanName, id)) {
     _channels[chanName].banned.erase(id);
     std::cout << "User with id " << id << " has been unbanned from channel "
               << _channels[chanName].name << "." << std::endl;
   }
+}
+
+void ChannelManager::addOperator(std::string channelName, Client *user) {
+  _channels[channelName].operators.insert(user->fd);
 }
 
 void ChannelManager::addChannel(std::string channelName, Channel channel) {
@@ -60,8 +64,6 @@ Channel *ChannelManager::getChannel(std::string channelName) {
 }
 
 void ChannelManager::addUser(std::string channelName, Client *user) {
-  if (_channels.find(channelName) == _channels.end()) // mesonge
-    addChannel(channelName, Channel(channelName));
   _channels[channelName].users.insert(user->fd);
 }
 

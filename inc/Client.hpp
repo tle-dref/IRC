@@ -11,7 +11,6 @@ struct Client {
   std::string nickname; // Pseudo de l'utilisateur
   std::string username; // Nom d'utilisateur
   std::string hostname; // Hôte de l'utilisateur
-  bool isOperator;      // Statut d'opérateur
   bool isAuthenticated; // Statut d'authentification
 
   Client();
@@ -47,7 +46,6 @@ public:
 
   // setter
   void setAuthenticated(int id, bool isAuthenticated);
-  void setOperator(int id, bool isOperator);
   void setNickname(int id, std::string nickname);
   void setClientname(int id, std::string username);
   void setHostname(int id, std::string hostname);
