@@ -4,6 +4,9 @@ Client::Client()
     : id(idGenerator()), fd(id), nickname(""), username(""), hostname(""),
       isAuthenticated(false) {}
 
+Client::Client(int fd) : id(idGenerator()), fd(fd), nickname(""), username(""), hostname(""),
+      isAuthenticated(false) {}
+
 Client::Client(std::string nickname)
     : id(idGenerator()), nickname(nickname), username(""), hostname(""),
       isAuthenticated(false) {}

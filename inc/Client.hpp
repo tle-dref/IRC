@@ -14,6 +14,7 @@ struct Client {
   bool isAuthenticated; // Statut d'authentification
 
   Client();
+  Client(int fd);
   Client(std::string nickname);
   ~Client();
   int idGenerator();

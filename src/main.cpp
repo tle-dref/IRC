@@ -5,7 +5,7 @@
 #include <iostream>
 #include <string>
 
-int main() {
+/*int main() {
   // 1) Initialiser vos objets (ClientManager, ChannelManager, etc.)
   // ----------------------------------------------------------------
   std::string channelName = "#myChannel";
@@ -77,4 +77,23 @@ int main() {
   }
 
   return 0;
+}*/
+
+
+#include "Server.hpp"
+#include <cstdlib>
+#include <iostream>
+
+int	main(int argc, char **argv)
+{
+	if (argc != 3)
+	{
+		std::cerr << "Usage: " << argv[0] << " <port> <password>" << std::endl;
+		return (1);
+	}
+	int port = std::atoi(argv[1]);
+	std::string password = argv[2];
+	Server server(port, password);
+	server.run();
+	return (0);
 }
