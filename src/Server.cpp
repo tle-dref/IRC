@@ -196,14 +196,14 @@ void Server::handleClientMessage(int fd)
 	std::stringstream ss(message);
 	std::string token;
 
-	dispatchCommand(_serv._clientManager, _serv._channelManager, cmd, fd);
-	// Gérer PASS
-	if (message.find("CAP LS") != std::string::npos)
-	{
-		std::string capMsg = "CAP * LS :multi-prefix sasl\r\n";
-		send(fd, capMsg.c_str(), capMsg.size(), 0);
-		std::cout << "Réponse CAP LS envoyée." << std::endl;
-	}
+	dispatchCommand(_serv._clientManager, _serv._channelManager, cmd, fd, *this);
+	//Gérer PASS
+	// if (message.find("CAP LS") != std::string::npos)
+	// {
+	// 	std::string capMsg = "CAP * LS :multi-prefix sasl\r\n";
+	// 	send(fd, capMsg.c_str(), capMsg.size(), 0);
+	// 	std::cout << "Réponse CAP LS envoyée." << std::endl;
+	// }
 	if (!client->isAuthenticated)
 	{
 		if (message.find("PASS ") != std::string::npos)
@@ -277,8 +277,8 @@ void Server::handleClientMessage(int fd)
 
 		send(fd, welcomeMsg.c_str(), welcomeMsg.size(), 0);
 	}
-	std::string modeMsg = ":" + client->nickname + " MODE " + client->nickname + " +i\r\n";
-	send(fd, modeMsg.c_str(), modeMsg.size(), 0);
+	//std::string modeMsg = ":" + client->nickname + " MODE " + client->nickname + " +i\r\n";
+	//send(fd, modeMsg.c_str(), modeMsg.size(), 0);
 	if (message.find("PING ") != std::string::npos)
 	{
 		std::string token;

@@ -70,11 +70,10 @@ Channel *ChannelManager::getChannel(std::string channelName) {
 
 void ChannelManager::addUser(std::string channelName, Client *user) {
   _channels[channelName]->users.insert(user->fd);
-  //std::set<int>::iterator it = _channels[channelName].users.begin();
-  // for (; it != _channels[channelName].users.end(); it++) {
-  //     std::cout << *it << " <=user fd" << std::endl;
-  // }
-    //std::cout << "user : " << users << " is in " << channelName << std::endl;
+  std::set<int>::iterator it = _channels[channelName]->users.begin();
+  for (; it != _channels[channelName]->users.end(); it++) {
+      std::cout << *it << " <=user fd" << std::endl;
+  }
 }
 
 void ChannelManager::removeUser(std::string channelName, Client user) {
@@ -179,7 +178,6 @@ bool ChannelManager::isUserInChannel(std::string channelName, int fd) {
 
 void ChannelManager::notifyChannel(std::string message, std::string channelName) {
   std::set<int>::iterator it = _channels[channelName]->users.begin();
-
   while (it != _channels[channelName]->users.end()) {
       std::cout << "sending message to " << *it << std::endl;
       send(*it, message.c_str(), message.size(), 0);

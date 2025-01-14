@@ -30,7 +30,7 @@ bool validateJoin(ClientManager& clients, ChannelManager& channels,
     }
 
     if (channels.isPasswordProtected(channelName)) {
-      if (cmd.getArguments().size() < 2 || 
+      if (cmd.getArguments().size() < 2 ||
           channels.getPassword(channelName) != cmd.getArguments()[1]) {
         std::cerr << "error_475 : ERR_BADCHANNELKEY" << std::endl;
         return false;
@@ -58,8 +58,9 @@ void doJoin(ClientManager& clients, ChannelManager& channels,
     std::cout << "user : " << *it << " is in " << channelName << std::endl;
     it++;
   }
-
-  channels.notifyChannel(":caca JOIN " + channelName + "\n", channelName);
+  // std::cout << "JE SUIS UNE DAUBE" << std::endl;
+  std::string notif = ":" + clients.getNickname(fdClient) + " JOIN " + channelName + "\n";
+  channels.notifyChannel(notif, channelName);
 
   //   if (!channel->getTopic().empty()) {
   //     clients.sendMessage("rpl_332"); // RPL_TOPIC

@@ -62,13 +62,13 @@ void dispatchCommand(ClientManager& clients, ChannelManager& channels,
 
   case 2: // JOIN
     if (validateJoin(clients, channels, cmd, fd)) {
-      // doJoin();
+      doJoin(clients, channels, cmd, fd);
     }
     break;
 
   case 3: // PRIVMSG
     if (validatePrivmsg(clients, channels, cmd, fd)) {
-      // doPrivMsg();
+      doPrivMsg(clients, channels, cmd, fd);
     }
     break;
 

@@ -82,25 +82,25 @@ bool validateTopic(ClientManager& clients, ChannelManager& channels,
 bool validatePart(ClientManager& clients, ChannelManager& channels,
                   const TokenisedCommand &cmd, const int fd);
 
-void doNick(ClientManager clients, ChannelManager channels,
+void doNick(ClientManager& clients, ChannelManager channels,
             const TokenisedCommand &cmd, const int fd);
-void doUser(ClientManager clients, ChannelManager channels,
+void doUser(ClientManager& clients, ChannelManager channels,
             const TokenisedCommand &cmd, const int fd);
-void doJoin(ClientManager clients, ChannelManager channels,
+void doJoin(ClientManager& clients, ChannelManager& channels,
+            const TokenisedCommand &cmd, int fdClient);
+void doPrivMsg(ClientManager& clients, ChannelManager& channels,
+    const TokenisedCommand &cmd, const int idClient);
+void doQuit(ClientManager& clients, ChannelManager channels,
             const TokenisedCommand &cmd, const int fd);
-void doPrivMsg(ClientManager clients, ChannelManager channels,
-               const TokenisedCommand &cmd, const int fd);
-void doQuit(ClientManager clients, ChannelManager channels,
+void doPong(ClientManager& clients, ChannelManager channels,
             const TokenisedCommand &cmd, const int fd);
-void doPong(ClientManager clients, ChannelManager channels,
+void doKick(ClientManager& clients, ChannelManager channels,
             const TokenisedCommand &cmd, const int fd);
-void doKick(ClientManager clients, ChannelManager channels,
+void doMode(ClientManager& clients, ChannelManager channels,
             const TokenisedCommand &cmd, const int fd);
-void doMode(ClientManager clients, ChannelManager channels,
+void doPass(ClientManager& clients, ChannelManager channels,
             const TokenisedCommand &cmd, const int fd);
-void doPass(ClientManager clients, ChannelManager channels,
-            const TokenisedCommand &cmd, const int fd);
-void doTopic(ClientManager clients, ChannelManager channels,
+void doTopic(ClientManager& clients, ChannelManager channels,
              const TokenisedCommand &cmd, const int fd);
-void doPart(ClientManager clients, ChannelManager channels,
+void doPart(ClientManager& clients, ChannelManager channels,
             const TokenisedCommand &cmd, const int fd);
