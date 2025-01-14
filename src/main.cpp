@@ -96,7 +96,7 @@ int	main(int argc, char **argv)
 	ClientManager clients;
 	ChannelManager channels;
 
-	Server server(port, password, clients, channels);
+	Server server(port, password);
 	server.run();
 	return (0);
 }
