@@ -54,32 +54,32 @@ public:
                  ClientManager &userManager, ChannelManager &channelManager);
 };
 
-void dispatchCommand(ClientManager clients, ChannelManager channels,
+void dispatchCommand(ClientManager& clients, ChannelManager& channels,
                      const TokenisedCommand &cmd, const int fd);
-void handleInvalidCommand(ClientManager clients, const std::string &cmd,
+void handleInvalidCommand(ClientManager& clients, const std::string &cmd,
                           const int fd);
 
-bool validateNick(ClientManager clients, ChannelManager channels,
+bool validateNick(ClientManager& clients, ChannelManager& channels,
                   const TokenisedCommand &cmd, const int fd);
-bool validateUser(ClientManager clients, ChannelManager channels,
+bool validateUser(ClientManager& clients, ChannelManager& channels,
                   const TokenisedCommand &cmd, const int fd);
-bool validateJoin(ClientManager clients, ChannelManager channels,
+bool validateJoin(ClientManager& clients, ChannelManager& channels,
                   const TokenisedCommand &cmd, const int fd);
-bool validatePrivMsg(ClientManager clients, ChannelManager channels,
-                     const TokenisedCommand &cmd, const int fd);
-bool validateQuit(ClientManager clients, ChannelManager channels,
+bool validatePrivmsg(ClientManager& clients, ChannelManager& channels,
                   const TokenisedCommand &cmd, const int fd);
-bool validatePing(ClientManager clients, ChannelManager channels,
+bool validateQuit(ClientManager& clients, ChannelManager& channels,
                   const TokenisedCommand &cmd, const int fd);
-bool validateKick(ClientManager clients, ChannelManager channels,
+bool validatePing(ClientManager& clients, ChannelManager& channels,
                   const TokenisedCommand &cmd, const int fd);
-bool validateMode(ClientManager clients, ChannelManager channels,
+bool validateKick(ClientManager& clients, ChannelManager& channels,
                   const TokenisedCommand &cmd, const int fd);
-bool validatePass(ClientManager clients, ChannelManager channels,
+bool validateMode(ClientManager& clients, ChannelManager& channels,
                   const TokenisedCommand &cmd, const int fd);
-bool validateTopic(ClientManager clients, ChannelManager channels,
-                   const TokenisedCommand &cmd, const int fd);
-bool validatePart(ClientManager clients, ChannelManager channels,
+bool validatePass(ClientManager& clients, ChannelManager& channels,
+                  const TokenisedCommand &cmd, const int fd);
+bool validateTopic(ClientManager& clients, ChannelManager& channels,
+                  const TokenisedCommand &cmd, const int fd);
+bool validatePart(ClientManager& clients, ChannelManager& channels,
                   const TokenisedCommand &cmd, const int fd);
 
 void doNick(ClientManager clients, ChannelManager channels,

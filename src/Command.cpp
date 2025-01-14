@@ -32,52 +32,63 @@ int CommandList::findCommandIndex(const std::string &cmd) {
   return -1;
 }
 
-void dispatchCommand(ClientManager clients, ChannelManager channels,
+void dispatchCommand(ClientManager& clients, ChannelManager& channels,
                      const TokenisedCommand &cmd, const int fd) {
   int commandIndex = CommandList::findCommandIndex(cmd.getCommand());
 
+  // Handle CAP command separately as it's not in our main command list
+  if (cmd.getCommand() == "CAP") {
+    // Just acknowledge CAP LS for now
+    if (cmd.getArguments().size() > 0 && cmd.getArguments()[0] == "LS") {
+      std::string response = "CAP * LS :\r\n";
+      send(fd, response.c_str(), response.length(), 0);
+    }
+    return;
+  }
 
   switch (commandIndex) {
   case 0: // NICK
     if (validateNick(clients, channels, cmd, fd)) {
-      // doNick();
+      clients.setNickname(fd, cmd.getArguments()[0]);
     }
     break;
 
   case 1: // USER
     if (validateUser(clients, channels, cmd, fd)) {
-      // doUser();
-    };
+      clients.setClientname(fd, cmd.getArguments()[0]);
+      clients.setHostname(fd, cmd.getArguments()[2]);
+    }
     break;
 
   case 2: // JOIN
     if (validateJoin(clients, channels, cmd, fd)) {
-      doJoin(clients, channels, cmd, fd);
+      // doJoin();
     }
     break;
 
   case 3: // PRIVMSG
-    if (validatePrivMsg(clients, channels, cmd, fd)) {
+    if (validatePrivmsg(clients, channels, cmd, fd)) {
       // doPrivMsg();
     }
     break;
 
   case 4: // QUIT
-    // if (validateQuit(clients, channels, cmd, fd)) {
-    //   // doQuit();
-    // }
+    if (validateQuit(clients, channels, cmd, fd)) {
+      // doQuit();
+    }
     break;
 
   case 5: // PING
     if (validatePing(clients, channels, cmd, fd)) {
-      // doPong();
+      std::string response = "PONG :" + cmd.getArguments()[0] + "\r\n";
+      send(fd, response.c_str(), response.length(), 0);
     }
     break;
 
   case 6: // KICK
-    // if (validateKick(clients, channels, cmd, fd)) {
-    //   // doKick();
-    // }
+    if (validateKick(clients, channels, cmd, fd)) {
+      // doKick();
+    }
     break;
 
   case 7: // MODE
@@ -88,7 +99,7 @@ void dispatchCommand(ClientManager clients, ChannelManager channels,
 
   case 8: // PASS
     if (validatePass(clients, channels, cmd, fd)) {
-      // doPass();
+      clients.setAuthenticated(fd, true);
     }
     break;
 
@@ -110,10 +121,8 @@ void dispatchCommand(ClientManager clients, ChannelManager channels,
   }
 }
 
-void handleInvalidCommand(ClientManager clients, const std::string &cmd,
+void handleInvalidCommand(ClientManager& clients, const std::string &cmd,
                           const int fd) {
-  std::cerr << "error_421: ERR_UNKNOWNCOMMAND" << std::endl;
-  (void)clients;
-  (void)cmd;
-  (void)fd;
+  std::string response = "421 " + clients.getNickname(fd) + " " + cmd + " :Unknown command\r\n";
+  send(fd, response.c_str(), response.length(), 0);
 }

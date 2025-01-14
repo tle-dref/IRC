@@ -44,7 +44,7 @@ public:
   ~ChannelManager();
 
   // functions
-  void addChannel(std::string channelName, Channel channel);
+  void addChannel(std::string channelName, Channel *channel);
   void removeChannel(std::string channelName);
   void addUser(std::string channelName, Client *user);
   void removeUser(std::string channelName, Client user);

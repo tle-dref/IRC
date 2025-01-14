@@ -24,7 +24,7 @@ private:
 
 public:
   ClientManager(){};
-  virtual ~ClientManager(){};
+  virtual ~ClientManager();
 
   // functions
   void addClient(Client *user);

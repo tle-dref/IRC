@@ -13,9 +13,16 @@ Client::Client(std::string nickname)
 
 Client::~Client() {}
 
-void ClientManager::addClient(Client *user) { _clients[user->fd] = user; }
+void ClientManager::addClient(Client *user) {
+    _clients[user->fd] = user;
+}
 
-void ClientManager::removeClient(int fd) { _clients.erase(fd); }
+void ClientManager::removeClient(int fd) {
+    if (_clients.find(fd) != _clients.end()) {
+        delete _clients[fd];
+        _clients.erase(fd);
+    }
+}
 
 void ClientManager::updateNickname(int fd, std::string nickname) {
   if (_clients.find(fd) != _clients.end())
@@ -123,4 +130,11 @@ void ClientManager::setClientname(int fd, std::string username) {
 
 void ClientManager::setHostname(int fd, std::string hostname) {
   _clients[fd]->hostname = hostname;
+}
+
+ClientManager::~ClientManager() {
+    for (std::map<int, Client*>::iterator it = _clients.begin(); it != _clients.end(); ++it) {
+        delete it->second;
+    }
+    _clients.clear();
 }

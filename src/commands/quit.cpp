@@ -2,7 +2,7 @@
 #include "Client.hpp"
 #include "Tokenisation.hpp"
 
-bool	validateQuit(ClientManager clients, ChannelManager channels,
+bool	validateQuit(ClientManager& clients, ChannelManager& channels,
 		const TokenisedCommand &cmd, int idClient)
 {
 	// Assurer que la commande a des arguments valides (par exemple un message de déconnexion optionnel)
@@ -24,7 +24,7 @@ bool	validateQuit(ClientManager clients, ChannelManager channels,
 	return (true);
 }
 
-void	doQuit(ClientManager clients, ChannelManager channels,
+void	doQuit(ClientManager& clients, ChannelManager& channels,
 		const TokenisedCommand &cmd, int idClient)
 {
 	Client	*client;

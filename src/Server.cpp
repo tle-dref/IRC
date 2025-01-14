@@ -6,7 +6,7 @@
 /*   By: dalebran <dalebran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/12 22:09:05 by gbruscan          #+#    #+#             */
-/*   Updated: 2025/01/14 18:00:18 by dalebran         ###   ########.fr       */
+/*   Updated: 2025/01/14 21:40:09 by dalebran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -196,7 +196,7 @@ void Server::handleClientMessage(int fd)
 	std::stringstream ss(message);
 	std::string token;
 
-	dispatchCommand(_serv._clientManager, _serv._channelManager, cmd, client->fd);
+	dispatchCommand(_serv._clientManager, _serv._channelManager, cmd, fd);
 	// Gérer PASS
 	if (message.find("CAP LS") != std::string::npos)
 	{

@@ -12,6 +12,8 @@ int ChannelManager::getNbrUsersOn(const std::string &chanName) {
 }
 
 bool ChannelManager::isBanned(const std::string &channelName, int fd) {
+  if (_channels.find(channelName) == _channels.end() || !_channels[channelName])
+    return false;
   std::set<int>::iterator it = _channels[channelName]->banned.begin();
   while (it != _channels[channelName]->banned.end()) {
     if (*it == fd)
@@ -49,12 +51,15 @@ void ChannelManager::addOperator(std::string channelName, Client *user) {
   _channels[channelName]->operators.insert(user->fd);
 }
 
-void ChannelManager::addChannel(std::string channelName, Channel channel) {
-  _channels[channelName] = &channel;
+void ChannelManager::addChannel(std::string channelName, Channel *channel) {
+  _channels[channelName] = channel;
 }
 
 void ChannelManager::removeChannel(std::string channelName) {
-  _channels.erase(channelName);
+  if (_channels.find(channelName) != _channels.end()) {
+    delete _channels[channelName];
+    _channels.erase(channelName);
+  }
 }
 
 Channel *ChannelManager::getChannel(std::string channelName) {
@@ -184,7 +189,12 @@ void ChannelManager::notifyChannel(std::string message, std::string channelName)
 
 ChannelManager::ChannelManager() {}
 
-ChannelManager::~ChannelManager() {}
+ChannelManager::~ChannelManager() {
+  for (std::map<std::string, Channel*>::iterator it = _channels.begin(); it != _channels.end(); ++it) {
+    delete it->second;
+  }
+  _channels.clear();
+}
 
 // TESTS()
 // {

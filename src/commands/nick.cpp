@@ -1,24 +1,24 @@
 #include "Client.hpp"
 #include "Tokenisation.hpp"
 
-bool validateNick(ClientManager clients, ChannelManager channels,
+bool validateNick(ClientManager& clients, ChannelManager& channels,
                   const TokenisedCommand &cmd, const int idClient) {
   if (cmd.getArguments().empty()) {
-    std::cerr << "error_431 : ERR_NOORIGIN" << std::endl;
+    std::string response = "431 :No nickname given\r\n";
+    send(idClient, response.c_str(), response.length(), 0);
     return false;
   }
   const std::string &nickname = cmd.getArguments()[0];
   if (nickname.length() > 9 || !isalpha(nickname[0])) {
-    std::cerr << "error_432 : ERR_ERRONEUSNICKNAME" << std::endl;
+    std::string response = "432 " + nickname + " :Erroneous nickname\r\n";
+    send(idClient, response.c_str(), response.length(), 0);
     return false;
   }
-  if (clients.usernameExists(nickname)) {
-    std::cerr << "error_433 : ERR_NICKNAMEINUSE" << std::endl;
+  if (clients.nicknameExists(nickname)) {
+    std::string response = "433 " + nickname + " :Nickname is already in use\r\n";
+    send(idClient, response.c_str(), response.length(), 0);
     return false;
   }
-  (void)clients;
   (void)channels;
-  (void)cmd;
-  (void)idClient;
   return true;
 }

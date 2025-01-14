@@ -1,19 +1,20 @@
 #include "Client.hpp"
 #include "Tokenisation.hpp"
 
-bool validateUser(ClientManager clients, ChannelManager channels,
+bool validateUser(ClientManager& clients, ChannelManager& channels,
                   const TokenisedCommand &cmd, const int idClient) {
-  if (cmd.getArguments().size() < 4){
-	std::cerr << "error_461 : ERR_NEEDMOREPARAMS" << std::endl;
+  if (cmd.getArguments().size() < 4) {
+    std::string response = "461 USER :Not enough parameters\r\n";
+    send(idClient, response.c_str(), response.length(), 0);
     return false;
   }
 
-  // if (clients.isRegister())
-  //   throw std::runtime_error("error_462"); // ERR_ALREADYREGISTERED
+  if (clients.getClient(idClient)->username != "") {
+    std::string response = "462 :You may not reregister\r\n";
+    send(idClient, response.c_str(), response.length(), 0);
+    return false;
+  }
 
-  (void)clients;
   (void)channels;
-  (void)cmd;
-  (void)idClient;
   return true;
 }
