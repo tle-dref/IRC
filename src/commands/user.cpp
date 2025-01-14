@@ -1,8 +1,10 @@
+#include "Server.hpp"
+#include "Channel.hpp"
 #include "Client.hpp"
 #include "Tokenisation.hpp"
 
-bool validateUser(ClientManager& clients, ChannelManager& channels,
-                  const TokenisedCommand &cmd, const int idClient) {
+bool Server::validateUser(ClientManager& clients, ChannelManager& channels,
+                  const TokenisedCommand &cmd, int idClient) {
   if (cmd.getArguments().size() < 4) {
     std::string response = "461 USER :Not enough parameters\r\n";
     send(idClient, response.c_str(), response.length(), 0);

@@ -1,5 +1,6 @@
 // kick.cpp
 
+#include "Server.hpp"
 #include "Client.hpp"
 #include "Channel.hpp"
 #include "Tokenisation.hpp"
@@ -10,8 +11,8 @@
 // Validation de la commande KICK
 // Format général: KICK <channel> <user> [<commentaire>...]
 // -----------------------------------------------------------------------------
-bool validateKick(ClientManager& clients, ChannelManager& channels,
-                  const TokenisedCommand &cmd, const int idClient) {
+bool Server::validateKick(ClientManager& clients, ChannelManager& channels,
+                  const TokenisedCommand &cmd, int idClient) {
     if (cmd.getArguments().size() < 2) {
         std::string response = "461 KICK :Not enough parameters\r\n";
         send(idClient, response.c_str(), response.length(), 0);
@@ -52,8 +53,8 @@ bool validateKick(ClientManager& clients, ChannelManager& channels,
 // -----------------------------------------------------------------------------
 // Exécution de la commande KICK
 // -----------------------------------------------------------------------------
-void doKick(ClientManager clients, ChannelManager channels,
-            const TokenisedCommand &cmd, const int idClient) {
+void Server::doKick(ClientManager& clients, ChannelManager& channels,
+            const TokenisedCommand &cmd, int fdClient) {
     // On suppose que validateKick() est déjà passé avec succès
     const std::string &channelName = cmd.getArguments()[0];
     const std::string &targetNick = cmd.getArguments()[1];
@@ -78,7 +79,7 @@ void doKick(ClientManager clients, ChannelManager channels,
         // Message de confirmation côté serveur
         std::cout << "L'utilisateur " << targetNick << " a été kick du channel "
                   << channelName << " par "
-                  << clients.getClient(idClient)->nickname << std::endl;
+                  << clients.getClient(fdClient)->nickname << std::endl;
 
         // Vous pouvez ici envoyer un message au client concerné,
         // ou à tous les membres du channel, etc.

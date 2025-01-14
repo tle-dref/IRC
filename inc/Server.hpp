@@ -114,8 +114,10 @@ class Server
       const TokenisedCommand &cmd, const int idClient);
   void doQuit(ClientManager& clients, ChannelManager& channels,
               const TokenisedCommand &cmd, const int fd);
+  void doPing(ClientManager& clients, ChannelManager& channels,
+            const TokenisedCommand &cmd, int fdClient);
   void doPong(ClientManager& clients, ChannelManager& channels,
-              const TokenisedCommand &cmd, const int fd);
+            const TokenisedCommand &cmd, int fdClient);
   void doKick(ClientManager& clients, ChannelManager& channels,
               const TokenisedCommand &cmd, const int fd);
   void doMode(ClientManager& clients, ChannelManager& channels,

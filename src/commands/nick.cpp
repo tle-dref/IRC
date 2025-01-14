@@ -1,8 +1,10 @@
+#include "Server.hpp"
+#include "Channel.hpp"
 #include "Client.hpp"
 #include "Tokenisation.hpp"
 
-bool validateNick(ClientManager& clients, ChannelManager& channels,
-                  const TokenisedCommand &cmd, const int idClient) {
+bool Server::validateNick(ClientManager& clients, ChannelManager& channels,
+                  const TokenisedCommand &cmd, int idClient) {
   if (cmd.getArguments().empty()) {
     std::string response = "431 :No nickname given\r\n";
     send(idClient, response.c_str(), response.length(), 0);
