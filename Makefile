@@ -45,6 +45,10 @@ uc:
 	@echo "===== Use case ====="
 	@echo "./$(NAME)"
 
+bearhate:
+	compiledb make
+
+
 debug: CXXFLAGS += -g
 debug: re
 
