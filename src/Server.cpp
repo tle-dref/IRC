@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gbruscan <gbruscan@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dalebran <dalebran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/12 22:09:05 by gbruscan          #+#    #+#             */
-/*   Updated: 2025/01/14 15:14:58 by gbruscan         ###   ########.fr       */
+/*   Updated: 2025/01/14 18:00:18 by dalebran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,12 @@
 #include <map>
 #include <sstream>
 #include "Tokenisation.hpp"
+#include "Command.hpp"
 
 struct Client;
 
-Server::Server(int port, const std::string &password) : port(port),
-	password(password)
+Server::Server(int port, const std::string &password,  ClientManager clients, ChannelManager channels) : port(port),
+	password(password), _serv(clients, channels)
 {
 	setupSocket();
 }
@@ -168,6 +169,7 @@ void Server::acceptNewClient()
 	// Ajouter le client au conteneur de gestion (map)
 	_clients[client_fd] = newClient;
 	std::cout << "Nouveau client connecté : " << newClient->hostname << std::endl;
+	_serv._clientManager.addClient(*newClient);
 }
 
 void Server::handleClientMessage(int fd)
@@ -187,11 +189,14 @@ void Server::handleClientMessage(int fd)
 
 	buffer[bytes_received] = '\0';
 	std::string message(buffer);
-	Client* client = _clients[fd];
+	TokenisedCommand cmd = tokenize(message);
+	Client* client = _serv._clientManager.getClient(fd);
 
 	std::cout << buffer << std::endl;
 	std::stringstream ss(message);
 	std::string token;
+
+	dispatchCommand(_serv._clientManager, _serv._channelManager, cmd, client->fd);
 	// Gérer PASS
 	if (message.find("CAP LS") != std::string::npos)
 	{
@@ -285,10 +290,6 @@ void Server::handleClientMessage(int fd)
 			send(fd, response.c_str(), response.size(), 0);
 			std::cout << "Send PONG response : " + response << std::endl;
 		}
-	}
-	if (message.find("JOIN ") != std::string::npos)
-	{
-		std::cout << "prout du cul\n";
 	}
 	if (message.find("QUIT ") != std::string::npos)
 	{

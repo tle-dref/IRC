@@ -12,7 +12,7 @@ const std::vector<std::string> &CommandList::getCommands() {
     commands.push_back("JOIN");
     commands.push_back("PRIVMSG");
     commands.push_back("QUIT");
-    commands.push_back("PONG");
+    commands.push_back("PING");
     commands.push_back("KICK");
     commands.push_back("MODE");
     commands.push_back("PASS");
@@ -33,86 +33,87 @@ int CommandList::findCommandIndex(const std::string &cmd) {
 }
 
 void dispatchCommand(ClientManager clients, ChannelManager channels,
-                     const TokenisedCommand &cmd, const int idClient) {
+                     const TokenisedCommand &cmd, const int fd) {
   int commandIndex = CommandList::findCommandIndex(cmd.getCommand());
+
 
   switch (commandIndex) {
   case 0: // NICK
-    if (validateNick(clients, channels, cmd, idClient)) {
+    if (validateNick(clients, channels, cmd, fd)) {
       // doNick();
     }
     break;
 
   case 1: // USER
-    if (validateUser(clients, channels, cmd, idClient)) {
+    if (validateUser(clients, channels, cmd, fd)) {
       // doUser();
     };
     break;
 
   case 2: // JOIN
-    if (validateJoin(clients, channels, cmd, idClient)) {
-      doJoin(clients, channels, cmd, idClient);
+    if (validateJoin(clients, channels, cmd, fd)) {
+      doJoin(clients, channels, cmd, fd);
     }
     break;
 
   case 3: // PRIVMSG
-    if (validatePrivMsg(clients, channels, cmd, idClient)) {
+    if (validatePrivMsg(clients, channels, cmd, fd)) {
       // doPrivMsg();
     }
     break;
 
   case 4: // QUIT
-    if (validateQuit(clients, channels, cmd, idClient)) {
+    if (validateQuit(clients, channels, cmd, fd)) {
       // doQuit();
     }
     break;
 
-  case 5: // PONG
-    if (validatePong(clients, channels, cmd, idClient)) {
+  case 5: // PING
+    if (validatePing(clients, channels, cmd, fd)) {
       // doPong();
     }
     break;
 
   case 6: // KICK
-    if (validateKick(clients, channels, cmd, idClient)) {
+    if (validateKick(clients, channels, cmd, fd)) {
       // doKick();
     }
     break;
 
   case 7: // MODE
-    if (validateMode(clients, channels, cmd, idClient)) {
+    if (validateMode(clients, channels, cmd, fd)) {
       // doMode();
     }
     break;
 
   case 8: // PASS
-    if (validatePass(clients, channels, cmd, idClient)) {
+    if (validatePass(clients, channels, cmd, fd)) {
       // doPass();
     }
     break;
 
   case 9: // TOPIC
-    if (validateTopic(clients, channels, cmd, idClient)) {
+    if (validateTopic(clients, channels, cmd, fd)) {
       // doTopic();
     }
     break;
 
   case 10: // PART
-    if (validatePart(clients, channels, cmd, idClient)) {
+    if (validatePart(clients, channels, cmd, fd)) {
       // doPart();
     }
     break;
 
   default:
-    handleInvalidCommand(clients, cmd.getCommand(), idClient);
+    handleInvalidCommand(clients, cmd.getCommand(), fd);
     break;
   }
 }
 
 void handleInvalidCommand(ClientManager clients, const std::string &cmd,
-                          const int idClient) {
+                          const int fd) {
   std::cerr << "error_421: ERR_UNKNOWNCOMMAND" << std::endl;
   (void)clients;
   (void)cmd;
-  (void)idClient;
+  (void)fd;
 }

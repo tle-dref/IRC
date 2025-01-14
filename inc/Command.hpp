@@ -11,11 +11,10 @@ public:
 };
 
 class CommandHandler {
-private:
+public:
   ClientManager &_clientManager;
   ChannelManager &_channelManager;
 
-public:
   CommandHandler(ClientManager &clientMgr, ChannelManager &chanMgr)
       : _clientManager(clientMgr), _channelManager(chanMgr) {}
 
@@ -56,52 +55,52 @@ public:
 };
 
 void dispatchCommand(ClientManager clients, ChannelManager channels,
-                     const TokenisedCommand &cmd, const int idClient);
+                     const TokenisedCommand &cmd, const int fd);
 void handleInvalidCommand(ClientManager clients, const std::string &cmd,
-                          const int idClient);
+                          const int fd);
 
 bool validateNick(ClientManager clients, ChannelManager channels,
-                  const TokenisedCommand &cmd, const int idClient);
+                  const TokenisedCommand &cmd, const int fd);
 bool validateUser(ClientManager clients, ChannelManager channels,
-                  const TokenisedCommand &cmd, const int idClient);
+                  const TokenisedCommand &cmd, const int fd);
 bool validateJoin(ClientManager clients, ChannelManager channels,
-                  const TokenisedCommand &cmd, const int idClient);
+                  const TokenisedCommand &cmd, const int fd);
 bool validatePrivMsg(ClientManager clients, ChannelManager channels,
-                     const TokenisedCommand &cmd, const int idClient);
+                     const TokenisedCommand &cmd, const int fd);
 bool validateQuit(ClientManager clients, ChannelManager channels,
-                  const TokenisedCommand &cmd, const int idClient);
-bool validatePong(ClientManager clients, ChannelManager channels,
-                  const TokenisedCommand &cmd, const int idClient);
+                  const TokenisedCommand &cmd, const int fd);
+bool validatePing(ClientManager clients, ChannelManager channels,
+                  const TokenisedCommand &cmd, const int fd);
 bool validateKick(ClientManager clients, ChannelManager channels,
-                  const TokenisedCommand &cmd, const int idClient);
+                  const TokenisedCommand &cmd, const int fd);
 bool validateMode(ClientManager clients, ChannelManager channels,
-                  const TokenisedCommand &cmd, const int idClient);
+                  const TokenisedCommand &cmd, const int fd);
 bool validatePass(ClientManager clients, ChannelManager channels,
-                  const TokenisedCommand &cmd, const int idClient);
+                  const TokenisedCommand &cmd, const int fd);
 bool validateTopic(ClientManager clients, ChannelManager channels,
-                   const TokenisedCommand &cmd, const int idClient);
+                   const TokenisedCommand &cmd, const int fd);
 bool validatePart(ClientManager clients, ChannelManager channels,
-                  const TokenisedCommand &cmd, const int idClient);
+                  const TokenisedCommand &cmd, const int fd);
 
 void doNick(ClientManager clients, ChannelManager channels,
-            const TokenisedCommand &cmd, const int idClient);
+            const TokenisedCommand &cmd, const int fd);
 void doUser(ClientManager clients, ChannelManager channels,
-            const TokenisedCommand &cmd, const int idClient);
+            const TokenisedCommand &cmd, const int fd);
 void doJoin(ClientManager clients, ChannelManager channels,
-            const TokenisedCommand &cmd, const int idClient);
+            const TokenisedCommand &cmd, const int fd);
 void doPrivMsg(ClientManager clients, ChannelManager channels,
-               const TokenisedCommand &cmd, const int idClient);
+               const TokenisedCommand &cmd, const int fd);
 void doQuit(ClientManager clients, ChannelManager channels,
-            const TokenisedCommand &cmd, const int idClient);
+            const TokenisedCommand &cmd, const int fd);
 void doPong(ClientManager clients, ChannelManager channels,
-            const TokenisedCommand &cmd, const int idClient);
+            const TokenisedCommand &cmd, const int fd);
 void doKick(ClientManager clients, ChannelManager channels,
-            const TokenisedCommand &cmd, const int idClient);
+            const TokenisedCommand &cmd, const int fd);
 void doMode(ClientManager clients, ChannelManager channels,
-            const TokenisedCommand &cmd, const int idClient);
+            const TokenisedCommand &cmd, const int fd);
 void doPass(ClientManager clients, ChannelManager channels,
-            const TokenisedCommand &cmd, const int idClient);
+            const TokenisedCommand &cmd, const int fd);
 void doTopic(ClientManager clients, ChannelManager channels,
-             const TokenisedCommand &cmd, const int idClient);
+             const TokenisedCommand &cmd, const int fd);
 void doPart(ClientManager clients, ChannelManager channels,
-            const TokenisedCommand &cmd, const int idClient);
+            const TokenisedCommand &cmd, const int fd);
