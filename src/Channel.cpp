@@ -7,6 +7,18 @@ Channel::Channel(std::string name)
 
 Channel::~Channel() {}
 
+void ChannelManager::msgChannel(std::string message, std::string channelName, int fd) {
+  std::set<int>::iterator it = _channels[channelName]->users.begin();
+  while (it != _channels[channelName]->users.end()) {
+        if (*it == fd) {
+            it++;
+            continue;
+        }
+      send(*it, message.c_str(), message.size(), 0);
+      it++;
+  }
+}
+
 int ChannelManager::getNbrUsersOn(const std::string &chanName) {
   return _channels[chanName]->users.size();
 }

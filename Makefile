@@ -8,7 +8,7 @@ INCDIR      = inc
 OBJDIR      = obj
 
 SRC         = main Channel Client Command Tokenisation Server
-SRC_CMDS    = join kick mode msg nick part pass ping pong quit topic user
+SRC_CMDS    = join kick mode msg nick part pass ping quit topic user cap
 
 SRCS        = $(addprefix $(SRCDIR)/, $(addsuffix .cpp, $(SRC)))
 SRCS_CMDS   = $(addprefix $(SRCDIR)/commands/, $(addsuffix .cpp, $(SRC_CMDS)))
@@ -47,7 +47,6 @@ uc:
 
 bearhate:
 	compiledb make
-
 
 debug: CXXFLAGS += -g
 debug: re

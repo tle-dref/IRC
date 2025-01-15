@@ -1,26 +1,22 @@
 #include "Server.hpp"
-#include "Channel.hpp"
-#include "Client.hpp"
-#include "Tokenisation.hpp"
 
-bool Server::validateNick(ClientManager& clients, ChannelManager& channels,
-                  const TokenisedCommand &cmd, int idClient) {
-  if (cmd.getArguments().empty()) {
-    std::string response = "431 :No nickname given\r\n";
-    send(idClient, response.c_str(), response.length(), 0);
-    return false;
-  }
-  const std::string &nickname = cmd.getArguments()[0];
-  if (nickname.length() > 9 || !isalpha(nickname[0])) {
-    std::string response = "432 " + nickname + " :Erroneous nickname\r\n";
-    send(idClient, response.c_str(), response.length(), 0);
-    return false;
-  }
-  if (clients.nicknameExists(nickname)) {
-    std::string response = "433 " + nickname + " :Nickname is already in use\r\n";
-    send(idClient, response.c_str(), response.length(), 0);
-    return false;
-  }
-  (void)channels;
-  return true;
+bool Server::validateNick(const TokenisedCommand &cmd, int fd) {
+    if (!_clients.getClient(fd)->isAuthenticated) {
+        std::string errorMsg = "ERROR :Vous devez d'abord vous authentifier avec PASS\r\n";
+        send(fd, errorMsg.c_str(), errorMsg.size(), 0);
+        return false;
+    }
+	const std::string &nickname = cmd.getArguments()[0];
+	if (_clients.nicknameExists(nickname)) {
+        std::string response = "433 " + nickname + " :Nickname is already in use\r\n";
+        send(fd, response.c_str(), response.length(), 0);
+        return false;
+    }
+    return cmd.getArguments().size() > 0;
+}
+
+void Server::doNick(const TokenisedCommand &cmd, int fd) {
+    std::string nick = cmd.getArguments()[0];
+    _clients.getClient(fd)->nickname = nick;
+    std::cout << "Client a défini son pseudonyme : " << nick << std::endl;
 }

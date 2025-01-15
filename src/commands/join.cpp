@@ -3,70 +3,42 @@
 #include "Client.hpp"
 #include "Tokenisation.hpp"
 
-bool Server::validateJoin(ClientManager& clients, ChannelManager& channels,
-                  const TokenisedCommand &cmd, int idClient) {
+bool Server::validateJoin(const TokenisedCommand &cmd, int fd) {
     if (cmd.getArguments().empty()) {
-      std::cerr << "error_461 : ERR_NEEDMOREPARAMS" << std::endl;
-      return false;
-    }
-
-    std::string channelName = cmd.getArguments()[0];
-
-    if (channelName.empty() || channelName[0] != '#' ||
-        channelName.length() > 50) {
-      std::cerr << "error_476 : ERR_BADCHANMASK" << std::endl;
-      return false;
-    }
-
-    // Si le channel n'existe pas encore, les vérifications suivantes ne sont pas nécessaires
-    if (channels.channelExists(channelName)) {
-      if (channels.isBanned(channelName, idClient)) {
-        std::cerr << "error_474 : ERR_BANNEDFROMCHAN" << std::endl;
+        std::string response = "461 JOIN :Not enough parameters\r\n";
+        send(fd, response.c_str(), response.length(), 0);
         return false;
-      }
-
-      if (channels.isFull(channelName)) {
-        std::cerr << "error_471 : ERR_CHANNELISFULL" << std::endl;
-        return false;
-      }
-
-      if (channels.isPasswordProtected(channelName)) {
-        if (cmd.getArguments().size() < 2 ||
-            channels.getPassword(channelName) != cmd.getArguments()[1]) {
-          std::cerr << "error_475 : ERR_BADCHANNELKEY" << std::endl;
-          return false;
-        }
-      }
     }
 
-    (void)clients;
-    return true;
-}
-
-void Server::doJoin(ClientManager& clients, ChannelManager& channels,
-            const TokenisedCommand &cmd, int fdClient) {
-
-    std::string channelName = cmd.getArguments()[0];
-    if (channels.getChannel(channelName) == NULL) {
-      channels.addChannel(channelName, new Channel(channelName));
-      channels.addOperator(channelName, clients.getClient(fdClient));
+	std::string channelName = cmd.getArguments()[0];
+    if (_channels.getChannel(channelName) == NULL) {
+      _channels.addChannel(channelName, new Channel(channelName));
+      _channels.addOperator(channelName, _clients.getClient(fd));
     }
-    channels.addUser(channelName, clients.getClient(fdClient));
+    _channels.addUser(channelName, _clients.getClient(fd));
 
-    std::set<int> users = channels.getUsers(channelName);
+    std::set<int> users = _channels.getUsers(channelName);
     std::set<int>::iterator it = users.begin();
     while (it != users.end()) {
       std::cout << "user : " << *it << " is in " << channelName << std::endl;
       it++;
     }
-    // std::cout << "JE SUIS UNE DAUBE" << std::endl;
-    std::string notif = ":" + clients.getNickname(fdClient) + " JOIN " + channelName + "\n";
-    channels.notifyChannel(notif, channelName);
+    return true;
+}
 
-    //   if (!channel->getTopic().empty()) {
-    //     clients.sendMessage("rpl_332"); // RPL_TOPIC
-    //   }
-
-    //   clients.sendMessage("rpl_353"); // RPL_NAMREPLY
-    //   clients.sendMessage("rpl_366"); // RPL_ENDOFNAMES
+void Server::doJoin(const TokenisedCommand &cmd, int fd) {
+    const std::string &channelName = cmd.getArguments()[0];
+    
+    // Vérifier si le canal existe, sinon le créer
+    if (!_channels.channelExists(channelName)) {
+        _channels.addChannel(channelName, new Channel(channelName));
+        _channels.addOperator(channelName, _clients.getClient(fd));
+    }
+    
+    // Ajouter l'utilisateur au canal
+    _channels.addUser(channelName, _clients.getClient(fd));
+    
+    // Envoyer la confirmation
+    std::string joinMsg = ":" + _clients.getClient(fd)->nickname + " JOIN " + channelName + "\r\n";
+    _channels.notifyChannel(joinMsg, channelName);
 }

@@ -2,32 +2,25 @@
 #include "Tokenisation.hpp"
 #include "Server.hpp"
 
-bool Server::validatePass(ClientManager& clients, ChannelManager& channels,
-                  const TokenisedCommand &cmd, const int idClient) {
-  (void)clients;
-  (void)channels;
-  (void)cmd;
-  (void)idClient;
-  return true;
+bool Server::validatePass(const TokenisedCommand &cmd, int fd) {
+    if (!cmd.getArguments().size()) {
+        std::string errorMsg = "ERROR :Mot de passe requis\r\n";
+        send(fd, errorMsg.c_str(), errorMsg.size(), 0);
+        return false;
+    }
+    return true;
 }
 
-void Server::doPass(ClientManager& clients, ChannelManager& channels,
-                  const TokenisedCommand &cmd, const int fdClient)
-{
-    (void)channels;
-    if (cmd.getArguments()[0] == this->password)
-        {
-            clients.getClient(fdClient)->isAuthenticated = true;
-            std::cout << "Mot de passe correct pour le client (fd: " << fdClient << ")" << std::endl;
-        }
-    else
-        {
-            std::string errorMsg = "ERROR :Mot de passe incorrect\r\n";
-            send(fdClient, errorMsg.c_str(), errorMsg.size(), 0);
-            close(fdClient );
-            epoll_ctl(epoll_fd, EPOLL_CTL_DEL, fdClient, NULL);
-            delete _clients[fdClient];
-            _clients.erase(fdClient);
-            return;
-        }
+void Server::doPass(const TokenisedCommand &cmd, int fd) {
+    if (cmd.getArguments()[0] == this->password) {
+        _clients.getClient(fd)->isAuthenticated = true;
+        std::cout << "Mot de passe correct pour le client (fd: " << fd << ")" << std::endl;
+    } else {
+        std::string errorMsg = "ERROR :Mot de passe incorrect\r\n";
+        send(fd, errorMsg.c_str(), errorMsg.size(), 0);
+        close(fd);
+        epoll_ctl(epoll_fd, EPOLL_CTL_DEL, fd, NULL);
+        // delete _clients[fd];
+        _clients.removeClient(fd);
+    }
 }

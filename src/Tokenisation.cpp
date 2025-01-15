@@ -19,11 +19,11 @@ void TokenisedCommand::addArgument(const std::string &argument) {
 }
 
 void TokenisedCommand::print() const {
-  std::cout << "Command: " << _command << "\n";
-  std::cout << "Arguments: ";
+  std::cout << "Command: " << _command << std::endl;
+  std::cout << "Arguments:";
   for (std::vector<std::string>::const_iterator it = _arguments.begin();
        it != _arguments.end(); ++it) {
-    std::cout << "'" << *it << "' ";
+    std::cout << " '" << *it << "'";
   }
   std::cout << std::endl;
 }
@@ -35,8 +35,15 @@ TokenisedCommand tokenize(const std::string &rawCommand) {
     throw std::invalid_argument("Empty command");
   }
 
+  // Nettoyer la commande
+  std::string cleanCommand = rawCommand;
+  while (!cleanCommand.empty() && (cleanCommand[0] == '\r' || cleanCommand[0] == '\x04'))
+    cleanCommand.erase(0, 1);
+  while (!cleanCommand.empty() && (cleanCommand[cleanCommand.length()-1] == '\r' || cleanCommand[cleanCommand.length()-1] == '\x04'))
+    cleanCommand.erase(cleanCommand.length()-1, 1);
+
   TokenisedCommand result;
-  std::istringstream stream(rawCommand);
+  std::istringstream stream(cleanCommand);
   std::string token;
 
   // 1. Commande
@@ -44,16 +51,18 @@ TokenisedCommand tokenize(const std::string &rawCommand) {
     result.setCommand(token);
   }
 
-  // 3. Arguments
+  // 2. Arguments
   while (stream >> token) {
+    // Si on trouve un token qui commence par ':', on prend tout le reste de la ligne
     if (token[0] == ':') {
       std::string trailing;
       std::getline(stream, trailing);
+      // On enlève le ':' et on ajoute le reste de la ligne
       result.addArgument(token.substr(1) + trailing);
       break;
-    } else {
-      result.addArgument(token); // Ajoute le token classique
     }
+    // Sinon on ajoute juste le token
+    result.addArgument(token);
   }
 
   return result;

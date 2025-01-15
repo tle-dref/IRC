@@ -6,7 +6,7 @@
 /*   By: dalebran <dalebran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/12 22:09:05 by gbruscan          #+#    #+#             */
-/*   Updated: 2025/01/14 21:40:09 by dalebran         ###   ########.fr       */
+/*   Updated: 2025/01/15 02:24:19 by dalebran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,92 +60,62 @@ int CommandList::findCommandIndex(const std::string &cmd) {
 
 void Server::dispatchCommand(ClientManager& clients, ChannelManager& channels,
                      const TokenisedCommand &cmd, const int fd) {
-  int commandIndex = CommandList::findCommandIndex(cmd.getCommand());
-
-  // Handle CAP command separately as it's not in our main command list
-  if (cmd.getCommand() == "CAP") {
-    // Just acknowledge CAP LS for now
-    if (cmd.getArguments().size() > 0 && cmd.getArguments()[0] == "LS") {
-      std::string response = "CAP * LS :\r\n";
-      send(fd, response.c_str(), response.length(), 0);
+    (void)clients;
+    (void)channels;
+    
+    const std::string &command = cmd.getCommand();
+    
+    if (command == "NICK") {
+        if (validateNick(cmd, fd))
+            doNick(cmd, fd);
     }
-    return;
-  }
-
-  switch (commandIndex) {
-  case 0: // NICK
-    if (validateNick(clients, channels, cmd, fd)) {
-      clients.setNickname(fd, cmd.getArguments()[0]);
+    else if (command == "USER") {
+        if (validateUser(cmd, fd))
+            doUser(cmd, fd);
     }
-    break;
-
-  case 1: // USER
-    if (validateUser(clients, channels, cmd, fd)) {
-      clients.setClientname(fd, cmd.getArguments()[0]);
-      clients.setHostname(fd, cmd.getArguments()[2]);
+    else if (command == "JOIN") {
+        if (validateJoin(cmd, fd))
+            doJoin(cmd, fd);
     }
-    break;
-
-  case 2: // JOIN
-    if (validateJoin(clients, channels, cmd, fd)) {
-      doJoin(clients, channels, cmd, fd);
+    else if (command == "PRIVMSG") {
+        if (validatePrivmsg(cmd, fd))
+            doPrivmsg(cmd, fd);
     }
-    break;
-
-  case 3: // PRIVMSG
-    if (validatePrivmsg(clients, channels, cmd, fd)) {
-      doPrivMsg(clients, channels, cmd, fd);
+    else if (command == "QUIT") {
+        if (validateQuit(cmd, fd))
+            doQuit(cmd, fd);
     }
-    break;
-
-  case 4: // QUIT
-    if (validateQuit(clients, channels, cmd, fd)) {
-      // doQuit();
+    else if (command == "PING") {
+        if (validatePing(cmd, fd))
+            doPong(cmd, fd);
     }
-    break;
-
-  case 5: // PING
-    if (validatePing(clients, channels, cmd, fd)) {
-      std::string response = "PONG :" + cmd.getArguments()[0] + "\r\n";
-      send(fd, response.c_str(), response.length(), 0);
+    else if (command == "KICK") {
+        if (validateKick(cmd, fd))
+            doKick(cmd, fd);
     }
-    break;
-
-  case 6: // KICK
-    if (validateKick(clients, channels, cmd, fd)) {
-      // doKick();
+    else if (command == "MODE") {
+        if (validateMode(cmd, fd))
+            doMode(cmd, fd);
     }
-    break;
-
-  case 7: // MODE
-    if (validateMode(clients, channels, cmd, fd)) {
-      // doMode();
+    else if (command == "PASS") {
+        if (validatePass(cmd, fd))
+            doPass(cmd, fd);
     }
-    break;
-
-  case 8: // PASS
-    if (validatePass(clients, channels, cmd, fd)) {
-      clients.setAuthenticated(fd, true);
-      doPass(clients, channels, cmd, fd);
+    else if (command == "TOPIC") {
+        if (validateTopic(cmd, fd))
+            doTopic(cmd, fd);
     }
-    break;
-
-  case 9: // TOPIC
-    if (validateTopic(clients, channels, cmd, fd)) {
-      // doTopic();
+    else if (command == "PART") {
+        if (validatePart(cmd, fd))
+            doPart(cmd, fd);
     }
-    break;
-
-  case 10: // PART
-    if (validatePart(clients, channels, cmd, fd)) {
-      // doPart();
+    else if (command == "CAP") {
+        if (validateCap(cmd, fd))
+            doCap(cmd, fd);
     }
-    break;
-
-  default:
-    handleInvalidCommand(clients, cmd.getCommand(), fd);
-    break;
-  }
+    else {
+        handleInvalidCommand(clients, command, fd);
+    }
 }
 
 void Server::handleInvalidCommand(ClientManager& clients, const std::string &cmd,
@@ -291,133 +261,58 @@ void Server::acceptNewClient()
 	// Créer un objet Client pour gérer les informations
 	newClient = new Client(client_fd);
 	newClient->hostname = (inet_ntoa(client_addr.sin_addr));
-	// Ajouter le client au conteneur de gestion (map)
-	_clients[client_fd] = newClient;
+	_clients.addClient(newClient);
 	std::cout << "Nouveau client connecté : " << newClient->hostname << std::endl;
-    _clientManager.addClient(newClient);
 }
 
-void Server::handleClientMessage(int fd)
-{
-	char buffer[512];
-	int bytes_received = recv(fd, buffer, sizeof(buffer) - 1, 0);
+void Server::handleClientMessage(int fd) {
+    char buffer[512];
+    int bytes_received = recv(fd, buffer, sizeof(buffer) - 1, 0);
 
-	if (bytes_received <= 0)
-	{
-		std::cout << "Client déconnecté (fd: " << fd << ")" << std::endl;
-		close(fd);
-		epoll_ctl(epoll_fd, EPOLL_CTL_DEL, fd, NULL);
-		delete _clients[fd];
-		_clients.erase(fd);
-		return;
-	}
+    if (bytes_received <= 0)
+    {
+        std::cout << "Client déconnecté (fd: " << fd << ")" << std::endl;
+        close(fd);
+        epoll_ctl(epoll_fd, EPOLL_CTL_DEL, fd, NULL);
+        // delete _clients[fd];
+        _clients.removeClient(fd);
+        return;
+    }
 
-	buffer[bytes_received] = '\0';
-	std::string message(buffer);
-	TokenisedCommand cmd = tokenize(message);
-	Client* client = _clientManager.getClient(fd);
+    buffer[bytes_received] = '\0';
+    std::string message(buffer);
+    
+    // Ajouter \r\n si nécessaire
+    if (message.length() >= 2 && message.substr(message.length() - 2) != "\r\n") {
+        message += "\r\n";
+    }
+    
+    handleClientMessage(message, fd);
+}
 
-	std::cout << buffer << std::endl;
-	std::stringstream ss(message);
-	std::string token;
+void Server::handleClientMessage(const std::string &message, int fd) {
+    std::stringstream ss(message);
+    std::string line;
 
-	dispatchCommand(_clientManager, _channelManager, cmd, fd);
-	//Gérer PASS
-	// if (message.find("CAP LS") != std::string::npos)
-	// {
-	// 	std::string capMsg = "CAP * LS :multi-prefix sasl\r\n";
-	// 	send(fd, capMsg.c_str(), capMsg.size(), 0);
-	// 	std::cout << "Réponse CAP LS envoyée." << std::endl;
-	// }
-	if (!client->isAuthenticated)
-	{
-		if (message.find("PASS ") != std::string::npos)
-		{
-			std::string pass;
-			while (ss >> token)
-			{
-				if (token == "PASS")
-				{
-					ss >> token;
-					pass = token;
-					break;
-				}
-			}
-			if (pass == password)
-			{
-				client->isAuthenticated = true;
-				std::cout << "Mot de passe correct pour le client (fd: " << fd << ")" << std::endl;
-			}
-			else
-			{
-				std::string errorMsg = "ERROR :Mot de passe incorrect\r\n";
-				send(fd, errorMsg.c_str(), errorMsg.size(), 0);
-				close(fd);
-				epoll_ctl(epoll_fd, EPOLL_CTL_DEL, fd, NULL);
-				delete _clients[fd];
-				_clients.erase(fd);
-				return;
-			}
-		}
-		else
-		{
-			std::string errorMsg = "ERROR :Mot de passe requis\r\n";
-			send(fd, errorMsg.c_str(), errorMsg.size(), 0);
-			return;
-		}
-	}
+    while (std::getline(ss, line, '\n')) {
+        if (line.empty())
+            continue;
 
-	// Gérer NICK
-	if (message.find("NICK ") != std::string::npos)
-	{
-		std::string nick;
-		while (ss >> token)
-		{
-			if (token == "NICK")
-			{
-				ss >> token;
-				nick = token;
-				break;
-			}
-		}
-		client->nickname = nick;
-		std::cout << "Client a défini son pseudonyme : " << nick << std::endl;
-	}
+        TokenisedCommand cmd = tokenize(line);
+        if (cmd.isValid()) {
+            std::cout << "Processing line: " << line << std::endl;
+            cmd.print();
+            std::cout << std::endl;
 
-	// Gérer USER
-	if (message.find("USER ") != std::string::npos)
-	{
-		if (client->nickname.empty())
-		{
-			std::string errorMsg = "ERROR :Vous devez définir un pseudonyme avec NICK avant USER\r\n";
-			send(fd, errorMsg.c_str(), errorMsg.size(), 0);
-			return;
-		}
-		// Envoyer le message de bienvenue
-		std::string welcomeMsg =
-			":localhost 001 " + client->nickname + " :Welcome to the IRC server\r\n" +
-			":localhost 002 " + client->nickname + " :Your host is localhost, running version 1.0\r\n" +
-			":localhost 003 " + client->nickname + " :This server was created today\r\n" +
-			":localhost 004 " + client->nickname + " localhost 1.0 i\r\n";
+            // Vérifier l'authentification sauf pour les commandes CAP et PASS
+            if (cmd.getCommand() != "CAP" && cmd.getCommand() != "PASS" && 
+                !_clients.getClient(fd)->isAuthenticated) {
+                std::string errorMsg = "ERROR :Vous devez d'abord vous authentifier avec PASS\r\n";
+                send(fd, errorMsg.c_str(), errorMsg.size(), 0);
+                continue;
+            }
 
-		send(fd, welcomeMsg.c_str(), welcomeMsg.size(), 0);
-	}
-	//std::string modeMsg = ":" + client->nickname + " MODE " + client->nickname + " +i\r\n";
-	//send(fd, modeMsg.c_str(), modeMsg.size(), 0);
-	if (message.find("PING ") != std::string::npos)
-	{
-		std::string token;
-		ss >> token;  // Lire le "PING"
-		ss >> token;  // Lire le serveur ciblé après "PING"
-		if (!token.empty())
-		{
-			std::string response = "PONG :" + token + "\r\n";
-			send(fd, response.c_str(), response.size(), 0);
-			std::cout << "Send PONG response : " + response << std::endl;
-		}
-	}
-	if (message.find("QUIT ") != std::string::npos)
-	{
-
+            dispatchCommand(_clients, _channels, cmd, fd);
+        }
     }
 }

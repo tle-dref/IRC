@@ -10,7 +10,9 @@ struct Client {
   std::string nickname; // Pseudo de l'utilisateur
   std::string username; // Nom d'utilisateur
   std::string hostname; // Hôte de l'utilisateur
+  std::string realname; // Nom réel de l'utilisateur
   bool isAuthenticated; // Statut d'authentification
+  std::string buffer;   // Buffer pour les messages partiels
 
   Client();
   Client(int fd);

@@ -3,20 +3,13 @@
 #include "Client.hpp"
 #include "Tokenisation.hpp"
 
-bool Server::validateMode(ClientManager& clients, ChannelManager& channels,
-                  const TokenisedCommand &cmd, int idClient) {
-  (void)clients;
-  (void)channels;
-  (void)cmd;
-  (void)idClient;
-  return true;
+bool Server::validateMode(const TokenisedCommand &cmd, int fd) {
+	(void)cmd;
+	(void)fd;
+	return true;
 }
 
-void Server::doMode(ClientManager& clients, ChannelManager& channels,
-            const TokenisedCommand &cmd, int fdClient) {
-  (void)clients;
-  (void)channels;
-  (void)cmd;
-  (void)fdClient;
-  // TODO: implement doMode function
+void Server::doMode(const TokenisedCommand &cmd, int fd) {
+	(void)cmd;
+	(void)fd;
 }

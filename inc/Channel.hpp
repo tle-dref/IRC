@@ -44,6 +44,7 @@ public:
   ~ChannelManager();
 
   // functions
+  void msgChannel(std::string message, std::string channelName, int fd);
   void addChannel(std::string channelName, Channel *channel);
   void removeChannel(std::string channelName);
   void addUser(std::string channelName, Client *user);
@@ -51,7 +52,7 @@ public:
   void banUser(const std::string &chanName, int fd);
   void unbanUser(const std::string &chanName, int fd);
   void addOperator(std::string channelName, Client *user);
-  void notifyChannel(std::string message, std::string chanName); // TODO
+  void notifyChannel(std::string message, std::string chanName);
 
   // getter
   int getNbrUsersOn(const std::string &channelName);

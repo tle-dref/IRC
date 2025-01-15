@@ -3,23 +3,18 @@
 #include "Client.hpp"
 #include "Tokenisation.hpp"
 
-bool Server::validatePing(ClientManager& clients, ChannelManager& channels,
-                  const TokenisedCommand &cmd, int idClient) {
-  if (cmd.getArguments().empty()) {
-    std::cerr << "error_461 : ERR_NEEDMOREPARAMS" << std::endl;
-    return false;
-  }
-  (void)clients;
-  (void)channels;
-  (void)idClient;
-  return true;
+bool Server::validatePing(const TokenisedCommand &cmd, int fd) {
+    if (cmd.getArguments().empty()) {
+        std::string response = "409 :No origin specified\r\n";
+        send(fd, response.c_str(), response.length(), 0);
+        return false;
+    }
+    return true;
 }
 
-void Server::doPing(ClientManager& clients, ChannelManager& channels,
-            const TokenisedCommand &cmd, int fdClient) {
-  std::string response = "PONG :" + cmd.getArguments()[0] + "\r\n";
-  send(fdClient, response.c_str(), response.length(), 0);
-  
-  (void)clients;
-  (void)channels;
+void Server::doPong(const TokenisedCommand &cmd, int fd) {
+    std::string token = cmd.getArguments()[0];
+    std::string response = "PONG :" + token + "\r\n";
+    send(fd, response.c_str(), response.size(), 0);
+    std::cout << "Send PONG response: " << response;
 }

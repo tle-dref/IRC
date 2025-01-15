@@ -1,22 +1,28 @@
 #include "Server.hpp"
-#include "Channel.hpp"
-#include "Client.hpp"
-#include "Tokenisation.hpp"
 
-bool Server::validateUser(ClientManager& clients, ChannelManager& channels,
-                  const TokenisedCommand &cmd, int idClient) {
-  if (cmd.getArguments().size() < 4) {
-    std::string response = "461 USER :Not enough parameters\r\n";
-    send(idClient, response.c_str(), response.length(), 0);
-    return false;
-  }
+bool Server::validateUser(const TokenisedCommand &cmd, int fd) {
+    if (_clients.getClient(fd)->nickname.empty()) {
+        std::string errorMsg = "ERROR :Vous devez définir un pseudonyme avec NICK avant USER\r\n";
+        send(fd, errorMsg.c_str(), errorMsg.size(), 0);
+        return false;
+    }
+    return cmd.getArguments().size() >= 4;
+}
 
-  if (clients.getClient(idClient)->username != "") {
-    std::string response = "462 :You may not reregister\r\n";
-    send(idClient, response.c_str(), response.length(), 0);
-    return false;
-  }
+void Server::doUser(const TokenisedCommand &cmd, int fd) {
+    Client* client = _clients.getClient(fd);
+    
+    // Stocker les informations USER
+    client->username = cmd.getArguments()[0];
+    client->hostname = cmd.getArguments()[2];
+    client->realname = cmd.getArguments()[3];
 
-  (void)channels;
-  return true;
+    // Envoyer le message de bienvenue
+    std::string welcomeMsg =
+        ":localhost 001 " + client->nickname + " :Welcome to the IRC server\r\n" +
+        ":localhost 002 " + client->nickname + " :Your host is localhost, running version 1.0\r\n" +
+        ":localhost 003 " + client->nickname + " :This server was created today\r\n" +
+        ":localhost 004 " + client->nickname + " localhost 1.0 i\r\n";
+
+    send(fd, welcomeMsg.c_str(), welcomeMsg.size(), 0);
 }

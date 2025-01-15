@@ -3,20 +3,13 @@
 #include "Client.hpp"
 #include "Tokenisation.hpp"
 
-bool Server::validateTopic(ClientManager& clients, ChannelManager& channels,
-                  const TokenisedCommand &cmd, int idClient) {
-  (void)clients;
-  (void)channels;
-  (void)cmd;
-  (void)idClient;
-  return true;
+bool Server::validateTopic(const TokenisedCommand &cmd, int fd) {
+    (void)cmd;
+	(void)fd;
+    return true;
 }
 
-void Server::doTopic(ClientManager& clients, ChannelManager& channels,
-            const TokenisedCommand &cmd, int fdClient) {
-  (void)clients;
-  (void)channels;
-  (void)cmd;
-  (void)fdClient;
-  // TODO: implement doTopic
+void Server::doTopic(const TokenisedCommand &cmd, int fd) {
+    (void)cmd;
+	(void)fd;
 }
