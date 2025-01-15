@@ -43,7 +43,7 @@ re: fclean all
 
 uc:
 	@echo "===== Use case ====="
-	@echo "./$(NAME)"
+	@echo "./$(NAME) <port> <password>"
 
 bearhate:
 	compiledb make

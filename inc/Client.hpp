@@ -22,7 +22,7 @@ struct Client {
 
 class ClientManager {
 private:
-  std::map<int, Client*> _clients;
+  std::map<int, Client *> _clients;
 
 public:
   ClientManager(){};
@@ -32,7 +32,7 @@ public:
   void addClient(Client *user);
   void removeClient(int fd);
   void sendToAllUsers(Channel *channel, std::string message); // TODO
-  void msgClient(std::string message, std::string clientName, int  fd);
+  void msgClient(std::string message, std::string clientName, int fd);
   void printClient(int fd) const; // Affiche les informations d'un client donné
   void printClients() const;
 
@@ -42,7 +42,7 @@ public:
   std::string getClientname(int fd);
   std::string getHostname(int fd);
   Client *getClient(int fd);
-  const std::map<int, Client*> &getClients() const;
+  const std::map<int, Client *> &getClients() const;
   void updateNickname(int fd, std::string nickname);
 
   // setter

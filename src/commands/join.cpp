@@ -1,4 +1,3 @@
-#include "Channel.hpp"
 #include "Client.hpp"
 #include "Server.hpp"
 #include "Tokenisation.hpp"
@@ -39,7 +38,7 @@ void Server::doJoin(const TokenisedCommand &cmd, int fd) {
   _channels.addUser(channelName, _clients.getClient(fd));
 
   // Envoyer la confirmation
-  std::string joinMsg =
-      ":" + _clients.getClient(fd)->nickname + " JOIN " + channelName + "\r\n";
+  std::string joinMsg = ":" + _clients.getClient(fd)->nickname +
+                        "!@GLMRC JOIN " + channelName + "\r\n";
   _channels.notifyChannel(joinMsg, channelName);
 }

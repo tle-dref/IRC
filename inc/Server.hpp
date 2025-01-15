@@ -6,7 +6,7 @@
 /*   By: dalebran <dalebran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/12 22:09:29 by gbruscan          #+#    #+#             */
-/*   Updated: 2025/01/15 15:23:21 by dalebran         ###   ########.fr       */
+/*   Updated: 2025/01/15 19:41:16 by dalebran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,6 @@ public:
                             const int fd);
 
   // cccccccccccccccccc
-  //
   void handleNick(int clientFd, const std::vector<std::string> &args,
                   ClientManager &userManager, ChannelManager &channelManager);
   void handleUser(int clientFd, const std::vector<std::string> &args,

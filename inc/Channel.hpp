@@ -1,22 +1,20 @@
 #pragma once
-# include "Client.hpp"
-# include <iostream>
-# include <map>
-# include <set>
-# include <arpa/inet.h>
-# include <cstdio>
-# include <cstdlib>
-# include <cstring>
-# include <ctime>
-# include <fcntl.h>
-# include <iomanip>
-# include <iostream>
-# include <netinet/in.h>
-# include <sys/epoll.h>
-# include <unistd.h>
-# include <map>
-# include <sstream>
-# include <sys/socket.h>
+#include "Client.hpp"
+#include <arpa/inet.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
+#include <fcntl.h>
+#include <iomanip>
+#include <iostream>
+#include <map>
+#include <netinet/in.h>
+#include <set>
+#include <sstream>
+#include <sys/epoll.h>
+#include <sys/socket.h>
+#include <unistd.h>
 
 struct Client;
 
@@ -37,7 +35,7 @@ struct Channel {
 
 class ChannelManager {
 private:
-  std::map<std::string, Channel*> _channels;
+  std::map<std::string, Channel *> _channels;
 
 public:
   ChannelManager();
@@ -53,6 +51,7 @@ public:
   void unbanUser(const std::string &chanName, int fd);
   void addOperator(std::string channelName, Client *user);
   void notifyChannel(std::string message, std::string chanName);
+  void printMyChannels(int fd);
 
   // getter
   int getNbrUsersOn(const std::string &channelName);
@@ -61,7 +60,7 @@ public:
   std::set<int> getOperators(std::string channelName);
   int getUserLimit(std::string channelName);
   std::string getPassword(std::string channelName);
-  const std::map<std::string, Channel*> &getChannels() const;
+  const std::map<std::string, Channel *> &getChannels() const;
   void getBannedUser(const std::string &chanName);
 
   // setter

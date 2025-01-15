@@ -7,6 +7,17 @@ Channel::Channel(std::string name)
 
 Channel::~Channel() {}
 
+void ChannelManager::printMyChannels(int fd) {
+  std::cout << "Channels : ";
+  for (std::map<std::string, Channel *>::const_iterator it = _channels.begin();
+       it != _channels.end(); ++it) {
+    if (it->second->users.find(fd) != it->second->users.end()) {
+      std::cout << it->first << " ";
+    }
+  }
+  std::cout << std::endl;
+}
+
 void ChannelManager::msgChannel(std::string message, std::string channelName,
                                 int fd) {
   std::set<int>::iterator it = _channels[channelName]->users.begin();
@@ -90,10 +101,8 @@ void ChannelManager::addUser(std::string channelName, Client *user) {
 }
 
 void ChannelManager::removeUser(std::string channelName, Client user) {
-  if (isUserInChannel(
-          channelName,
-          user.fd)) // mesonge est ce que le user est dans le channel
-    return;         // error a preciser
+  if (!isUserInChannel(channelName, user.fd))
+    return;
   _channels[channelName]->users.erase(user.fd);
 }
 

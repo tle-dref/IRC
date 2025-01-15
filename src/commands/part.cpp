@@ -13,17 +13,20 @@ bool Server::validatePart(const TokenisedCommand &cmd, int fd) {
     return false;
   }
 
-  if (_channels.isUserInChannel(channelName, fd)) {
+  _channels.printMyChannels(fd);
+  if (!_channels.isUserInChannel(channelName, fd)) {
     std::cerr << "error_442 " << channelName << std::endl;
     return false;
   }
 
-  (void)cmd;
-  (void)fd;
   return true;
 }
 
 void Server::doPart(const TokenisedCommand &cmd, int fd) {
-  (void)cmd;
-  (void)fd;
+  std::string channelName = cmd.getArguments()[0];
+
+  std::string partMsg =
+      ":" + _clients.getClient(fd)->nickname + " PART " + channelName + "\r\n";
+  _channels.notifyChannel(partMsg, channelName);
+  _channels.removeUser(channelName, fd);
 }
