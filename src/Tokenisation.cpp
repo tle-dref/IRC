@@ -37,13 +37,15 @@ TokenisedCommand tokenize(const std::string &rawCommand) {
 
   // Nettoyer la commande
   std::string cleanCommand = rawCommand;
-  while (!cleanCommand.empty() &&
-         (cleanCommand[0] == '\r' || cleanCommand[0] == '\x04'))
-    cleanCommand.erase(0, 1);
-  while (!cleanCommand.empty() &&
-         (cleanCommand[cleanCommand.length() - 1] == '\r' ||
-          cleanCommand[cleanCommand.length() - 1] == '\x04'))
-    cleanCommand.erase(cleanCommand.length() - 1, 1);
+
+  for (std::string::iterator it = cleanCommand.begin();
+       it != cleanCommand.end();) {
+    if (*it == '\r') {
+      it = cleanCommand.erase(it);
+    } else {
+      ++it;
+    }
+  }
 
   TokenisedCommand result;
   std::istringstream stream(cleanCommand);

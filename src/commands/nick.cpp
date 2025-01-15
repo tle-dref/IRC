@@ -3,14 +3,13 @@
 bool Server::validateNick(const TokenisedCommand &cmd, int fd) {
   if (!_clients.getClient(fd)->isAuthenticated) {
     std::string errorMsg =
-        "ERROR :Vous devez d'abord vous authentifier avec PASS\r\n";
+        "ERROR :Vous devez d'abord vous authentifier avec PASS\n";
     send(fd, errorMsg.c_str(), errorMsg.size(), 0);
     return false;
   }
   const std::string &nickname = cmd.getArguments()[0];
   if (_clients.nicknameExists(nickname)) {
-    std::string response =
-        "433 " + nickname + " :Nickname is already in use\r\n";
+    std::string response = "433 " + nickname + " :Nickname is already in use\n";
     send(fd, response.c_str(), response.length(), 0);
     return false;
   }

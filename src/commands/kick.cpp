@@ -5,7 +5,7 @@
 
 bool Server::validateKick(const TokenisedCommand &cmd, int fd) {
   if (cmd.getArguments().size() < 2) {
-    std::string response = "461 KICK :Not enough parameters\r\n";
+    std::string response = "461 KICK :Not enough parameters\n";
     std::cout << response << std::endl;
     return false;
   }
@@ -15,15 +15,14 @@ bool Server::validateKick(const TokenisedCommand &cmd, int fd) {
 
   // Vérifier si le canal existe
   if (!_channels.channelExists(channel)) {
-    std::string response = "403 " + channel + " :No such channel\r\n";
+    std::string response = "403 " + channel + " :No such channel\n";
     std::cout << response << std::endl;
     return false;
   }
 
   // Vérifier si l'utilisateur est opérateur du canal
   if (!_channels.isOperator(channel, fd)) {
-    std::string response =
-        "482 " + channel + " :You're not channel operator\r\n";
+    std::string response = "482 " + channel + " :You're not channel operator\n";
     std::cout << response << std::endl;
     return false;
   }
@@ -32,7 +31,7 @@ bool Server::validateKick(const TokenisedCommand &cmd, int fd) {
   int targetFd = _clients.getFd(target);
   if (targetFd == -1 || !_channels.isUserInChannel(channel, targetFd)) {
     std::string response =
-        "441 " + target + " " + channel + " :They aren't on that channel\r\n";
+        "441 " + target + " " + channel + " :They aren't on that channel\n";
     std::cout << response << std::endl;
     return false;
   }

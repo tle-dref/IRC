@@ -4,7 +4,7 @@
 
 bool Server::validatePass(const TokenisedCommand &cmd, int fd) {
   if (!cmd.getArguments().size()) {
-    std::string errorMsg = "ERROR :Mot de passe requis\r\n";
+    std::string errorMsg = "ERROR :Mot de passe requis\n";
     send(fd, errorMsg.c_str(), errorMsg.size(), 0);
     return false;
   }
@@ -17,7 +17,7 @@ void Server::doPass(const TokenisedCommand &cmd, int fd) {
     std::cout << "Mot de passe correct pour le client (fd: " << fd << ")"
               << std::endl;
   } else {
-    std::string errorMsg = "ERROR :Mot de passe incorrect\r\n";
+    std::string errorMsg = "ERROR :Mot de passe incorrect\n";
     send(fd, errorMsg.c_str(), errorMsg.size(), 0);
     close(fd);
     epoll_ctl(epoll_fd, EPOLL_CTL_DEL, fd, NULL);

@@ -103,6 +103,8 @@ void ChannelManager::addUser(std::string channelName, Client *user) {
 void ChannelManager::removeUser(std::string channelName, Client user) {
   if (!isUserInChannel(channelName, user.fd))
     return;
+  std::cout << "user " << user.fd << " has been removed from channel "
+            << channelName << std::endl;
   _channels[channelName]->users.erase(user.fd);
 }
 

@@ -2,7 +2,7 @@
 
 bool Server::validateCap(const TokenisedCommand &cmd, int fd) {
   if (cmd.getArguments().empty()) {
-    std::string response = "461 CAP :Not enough parameters\r\n";
+    std::string response = "461 CAP :Not enough parameters\n";
     send(fd, response.c_str(), response.length(), 0);
     return false;
   }

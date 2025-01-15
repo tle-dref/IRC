@@ -5,7 +5,7 @@
 
 bool Server::validatePrivmsg(const TokenisedCommand &cmd, int fd) {
   if (cmd.getArguments().size() < 2) {
-    std::string response = "461 PRIVMSG :Not enough parameters\r\n";
+    std::string response = "461 PRIVMSG :Not enough parameters\n";
     send(fd, response.c_str(), response.length(), 0);
     return false;
   }

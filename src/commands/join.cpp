@@ -4,7 +4,7 @@
 
 bool Server::validateJoin(const TokenisedCommand &cmd, int fd) {
   if (cmd.getArguments().empty()) {
-    std::string response = "461 JOIN :Not enough parameters\r\n";
+    std::string response = "461 JOIN :Not enough parameters\n";
     send(fd, response.c_str(), response.length(), 0);
     return false;
   }

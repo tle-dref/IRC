@@ -6,7 +6,7 @@
 /*   By: dalebran <dalebran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/12 22:09:05 by gbruscan          #+#    #+#             */
-/*   Updated: 2025/01/15 20:00:47 by dalebran         ###   ########.fr       */
+/*   Updated: 2025/01/15 22:02:11 by dalebran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ void Server::dispatchCommand(ClientManager &clients, ChannelManager &channels,
 void Server::handleInvalidCommand(ClientManager &clients,
                                   const std::string &cmd, const int fd) {
   std::string response =
-      "421 " + clients.getNickname(fd) + " " + cmd + " :Unknown command\r\n";
+      "421 " + clients.getNickname(fd) + " " + cmd + " :Unknown command\n";
   send(fd, response.c_str(), response.length(), 0);
 }
 
@@ -261,7 +261,7 @@ void Server::handleClientMessage(const std::string &message, int fd) {
       if (cmd.getCommand() != "CAP" && cmd.getCommand() != "PASS" &&
           !_clients.getClient(fd)->isAuthenticated) {
         std::string errorMsg =
-            "ERROR :Vous devez d'abord vous authentifier avec PASS\r\n";
+            "ERROR :Vous devez d'abord vous authentifier avec PASS\n";
         send(fd, errorMsg.c_str(), errorMsg.size(), 0);
         continue;
       }
