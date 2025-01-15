@@ -13,7 +13,6 @@ bool Server::validatePart(const TokenisedCommand &cmd, int fd) {
     return false;
   }
 
-  _channels.printMyChannels(fd);
   if (!_channels.isUserInChannel(channelName, fd)) {
     std::cerr << "error_442 " << channelName << std::endl;
     return false;
