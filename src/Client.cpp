@@ -29,6 +29,20 @@ void ClientManager::updateNickname(int fd, std::string nickname) {
     setNickname(fd, nickname);
 }
 
+void ClientManager::msgClient(std::string message, std::string clientName, int fd)
+{
+    std::cout << "client name " << clientName << std::endl;
+    int fdClient = getFd(clientName);
+    if (fdClient == -1)
+    {
+        std::string response = "401 " + clientName + " :No such nick/channel\n";
+        send(fd, response.c_str(), response.length(), 0);
+        return;
+    }
+    std::cout << "fdClient :" << fdClient << std::endl;
+    send(fdClient, message.c_str(), message.length(), 0);
+}
+
 // void ClientManager::printClient(int fd) const {
 //   if (_clients.find(fd) == _clients.end()) {
 //     std::cout << "Client with fd " << fd << " does not exist." << std::endl;
@@ -65,10 +79,10 @@ void ClientManager::updateNickname(int fd, std::string nickname) {
 
 Client *ClientManager::getClient(int fd) { return _clients[fd]; }
 
-int ClientManager::getFd(std::string username) {
+int ClientManager::getFd(std::string nickname) {
   std::map<int, Client*>::iterator it = _clients.begin();
   while (it != _clients.end()) {
-    if (it->second->username == username)
+    if (it->second->nickname == nickname)
       return it->first;
     it++;
   }

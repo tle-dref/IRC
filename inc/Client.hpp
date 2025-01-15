@@ -32,7 +32,7 @@ public:
   void addClient(Client *user);
   void removeClient(int fd);
   void sendToAllUsers(Channel *channel, std::string message); // TODO
-  void sendPrvMsg(Client *client, std::string message);       // TODO
+  void msgClient(std::string message, std::string clientName, int  fd);
   void printClient(int fd) const; // Affiche les informations d'un client donné
   void printClients() const;
 
