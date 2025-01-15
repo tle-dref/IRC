@@ -27,7 +27,7 @@ bool Server::validateKick(const TokenisedCommand &cmd, int fd) {
   // Vérifier si la cible existe dans le canal
   int targetFd = _clients.getFd(target);
   if (targetFd == -1 || !_channels.isUserInChannel(channel, targetFd)) {
-    // error_441(fd, _clients.getNickname(fd), channel);
+    error_441(fd, _clients.getNickname(fd), channel);
     std::string errorMsg = ":" + _clients.getNickname(fd) + "!" +
                            _clients.getClientname(fd) + "@I.R.SIUSIU NOTICE " +
                            channel + " :User " + target + " does not exist\n";
