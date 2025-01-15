@@ -4,23 +4,8 @@
 
 bool Server::validateJoin(const TokenisedCommand &cmd, int fd) {
   if (cmd.getArguments().empty()) {
-    std::string response = "461 JOIN :Not enough parameters\n";
-    send(fd, response.c_str(), response.length(), 0);
+    error_461(fd, _clients.getClientname(fd), cmd.getCommand());
     return false;
-  }
-
-  std::string channelName = cmd.getArguments()[0];
-  if (_channels.getChannel(channelName) == NULL) {
-    _channels.addChannel(channelName, new Channel(channelName));
-    _channels.addOperator(channelName, _clients.getClient(fd));
-  }
-  _channels.addUser(channelName, _clients.getClient(fd));
-
-  std::set<int> users = _channels.getUsers(channelName);
-  std::set<int>::iterator it = users.begin();
-  while (it != users.end()) {
-    std::cout << "user : " << *it << " is in " << channelName << std::endl;
-    it++;
   }
   return true;
 }

@@ -6,7 +6,7 @@
 /*   By: dalebran <dalebran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/12 22:09:29 by gbruscan          #+#    #+#             */
-/*   Updated: 2025/01/15 19:41:16 by dalebran         ###   ########.fr       */
+/*   Updated: 2025/01/15 22:28:27 by dalebran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #define SERVER_HPP
 
 #include "Client.hpp"
+#include "Errors.hpp"
 #include "Tokenisation.hpp"
 #include <poll.h>
 #include <string>

@@ -1,6 +1,8 @@
 #include "Server.hpp"
 
 bool Server::validateUser(const TokenisedCommand &cmd, int fd) {
+
+  // bizarre, a pas trop toucher sinon pete les plombs
   if (_clients.getClient(fd)->nickname.empty()) {
     std::string errorMsg =
         "ERROR :Vous devez définir un pseudonyme avec NICK avant USER\n";

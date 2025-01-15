@@ -3,8 +3,7 @@
 
 bool Server::validatePing(const TokenisedCommand &cmd, int fd) {
   if (cmd.getArguments().empty()) {
-    std::string response = "409 :No origin specified\n";
-    send(fd, response.c_str(), response.length(), 0);
+    error_409(fd, _clients.getClientname(fd));
     return false;
   }
   return true;

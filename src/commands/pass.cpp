@@ -4,8 +4,7 @@
 
 bool Server::validatePass(const TokenisedCommand &cmd, int fd) {
   if (!cmd.getArguments().size()) {
-    std::string errorMsg = "ERROR :Mot de passe requis\n";
-    send(fd, errorMsg.c_str(), errorMsg.size(), 0);
+    error_461(fd, _clients.getClientname(fd), cmd.getCommand());
     return false;
   }
   return true;

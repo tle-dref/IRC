@@ -5,8 +5,7 @@
 
 bool Server::validateKick(const TokenisedCommand &cmd, int fd) {
   if (cmd.getArguments().size() < 2) {
-    std::string response = "461 KICK :Not enough parameters\n";
-    std::cout << response << std::endl;
+    error_461(fd, _clients.getNickname(fd), cmd.getCommand());
     return false;
   }
 
@@ -15,24 +14,24 @@ bool Server::validateKick(const TokenisedCommand &cmd, int fd) {
 
   // Vérifier si le canal existe
   if (!_channels.channelExists(channel)) {
-    std::string response = "403 " + channel + " :No such channel\n";
-    std::cout << response << std::endl;
+    error_403(fd, _clients.getNickname(fd), channel);
     return false;
   }
 
   // Vérifier si l'utilisateur est opérateur du canal
   if (!_channels.isOperator(channel, fd)) {
-    std::string response = "482 " + channel + " :You're not channel operator\n";
-    std::cout << response << std::endl;
+    error_482(fd, _clients.getNickname(fd), channel);
     return false;
   }
 
   // Vérifier si la cible existe dans le canal
   int targetFd = _clients.getFd(target);
   if (targetFd == -1 || !_channels.isUserInChannel(channel, targetFd)) {
-    std::string response =
-        "441 " + target + " " + channel + " :They aren't on that channel\n";
-    std::cout << response << std::endl;
+    // error_441(fd, _clients.getNickname(fd), channel);
+    std::string errorMsg = ":" + _clients.getNickname(fd) + "!" +
+                           _clients.getClientname(fd) + "@I.R.SIUSIU NOTICE " +
+                           channel + " :User " + target + " does not exist\n";
+    send(fd, errorMsg.c_str(), errorMsg.size(), 0);
     return false;
   }
 

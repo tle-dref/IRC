@@ -3,18 +3,18 @@
 
 bool Server::validatePart(const TokenisedCommand &cmd, int fd) {
   if (cmd.getArguments().size() < 1) {
-    std::cerr << "error_461" << std::endl;
+    error_461(fd, _clients.getClientname(fd), cmd.getCommand());
     return false;
   }
 
   std::string channelName = cmd.getArguments()[0];
   if (_channels.getChannel(channelName) == NULL) {
-    std::cerr << "error_403 " << channelName << std::endl;
+    error_403(fd, _clients.getClientname(fd), channelName);
     return false;
   }
 
   if (!_channels.isUserInChannel(channelName, fd)) {
-    std::cerr << "error_442 " << channelName << std::endl;
+    error_442(fd, _clients.getClientname(fd), channelName);
     return false;
   }
 
