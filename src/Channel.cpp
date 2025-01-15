@@ -7,15 +7,16 @@ Channel::Channel(std::string name)
 
 Channel::~Channel() {}
 
-void ChannelManager::msgChannel(std::string message, std::string channelName, int fd) {
+void ChannelManager::msgChannel(std::string message, std::string channelName,
+                                int fd) {
   std::set<int>::iterator it = _channels[channelName]->users.begin();
   while (it != _channels[channelName]->users.end()) {
-        if (*it == fd) {
-            it++;
-            continue;
-        }
-      send(*it, message.c_str(), message.size(), 0);
+    if (*it == fd) {
       it++;
+      continue;
+    }
+    send(*it, message.c_str(), message.size(), 0);
+    it++;
   }
 }
 
@@ -84,7 +85,7 @@ void ChannelManager::addUser(std::string channelName, Client *user) {
   _channels[channelName]->users.insert(user->fd);
   std::set<int>::iterator it = _channels[channelName]->users.begin();
   for (; it != _channels[channelName]->users.end(); it++) {
-      std::cout << *it << " <=user fd" << std::endl;
+    std::cout << *it << " <=user fd" << std::endl;
   }
 }
 
@@ -120,7 +121,7 @@ std::string ChannelManager::getPassword(std::string channelName) {
   return _channels[channelName]->password;
 }
 
-const std::map<std::string, Channel*> &ChannelManager::getChannels() const {
+const std::map<std::string, Channel *> &ChannelManager::getChannels() const {
   return _channels;
 }
 
@@ -185,22 +186,24 @@ bool ChannelManager::isFull(std::string channelName) {
 
 bool ChannelManager::isUserInChannel(std::string channelName, int fd) {
   return (_channels[channelName]->users.find(fd) !=
-      _channels[channelName]->users.end());
+          _channels[channelName]->users.end());
 }
 
-void ChannelManager::notifyChannel(std::string message, std::string channelName) {
+void ChannelManager::notifyChannel(std::string message,
+                                   std::string channelName) {
   std::set<int>::iterator it = _channels[channelName]->users.begin();
   while (it != _channels[channelName]->users.end()) {
-      std::cout << "sending message to " << *it << std::endl;
-      send(*it, message.c_str(), message.size(), 0);
-      it++;
+    std::cout << "sending message to " << *it << std::endl;
+    send(*it, message.c_str(), message.size(), 0);
+    it++;
   }
 }
 
 ChannelManager::ChannelManager() {}
 
 ChannelManager::~ChannelManager() {
-  for (std::map<std::string, Channel*>::iterator it = _channels.begin(); it != _channels.end(); ++it) {
+  for (std::map<std::string, Channel *>::iterator it = _channels.begin();
+       it != _channels.end(); ++it) {
     delete it->second;
   }
   _channels.clear();

@@ -6,31 +6,28 @@
 /*   By: dalebran <dalebran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/12 22:09:05 by gbruscan          #+#    #+#             */
-/*   Updated: 2025/01/15 02:24:19 by dalebran         ###   ########.fr       */
+/*   Updated: 2025/01/15 15:26:45 by dalebran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
+#include "Client.hpp"
+#include "Tokenisation.hpp"
 #include <arpa/inet.h>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
 #include <fcntl.h>
-#include <iomanip>
 #include <iostream>
 #include <netinet/in.h>
+#include <sstream>
 #include <sys/epoll.h>
 #include <unistd.h>
-#include <map>
-#include <sstream>
-#include "Client.hpp"
-#include "Tokenisation.hpp"
-#include "Command.hpp"
 
 struct Client;
 
-const std::vector<std::string> &CommandList::getCommands() {
+const std::vector<std::string> &Server::getCommands() {
   static std::vector<std::string> commands;
   if (commands.empty()) {
     commands.push_back("NICK");
@@ -48,271 +45,228 @@ const std::vector<std::string> &CommandList::getCommands() {
   return commands;
 }
 
-int CommandList::findCommandIndex(const std::string &cmd) {
-  const std::vector<std::string> &cmds = getCommands();
-  for (size_t i = 0; i < cmds.size(); ++i) {
-    if (cmds[i] == cmd) {
-      return i;
-    }
+void Server::dispatchCommand(ClientManager &clients, ChannelManager &channels,
+                             const TokenisedCommand &cmd, const int fd) {
+  (void)clients;
+  (void)channels;
+
+  const std::string &command = cmd.getCommand();
+
+  if (command == "NICK") {
+    if (validateNick(cmd, fd))
+      doNick(cmd, fd);
+  } else if (command == "USER") {
+    if (validateUser(cmd, fd))
+      doUser(cmd, fd);
+  } else if (command == "JOIN") {
+    if (validateJoin(cmd, fd))
+      doJoin(cmd, fd);
+  } else if (command == "PRIVMSG") {
+    if (validatePrivmsg(cmd, fd))
+      doPrivmsg(cmd, fd);
+  } else if (command == "QUIT") {
+    if (validateQuit(cmd, fd))
+      doQuit(cmd, fd);
+  } else if (command == "PING") {
+    if (validatePing(cmd, fd))
+      doPong(cmd, fd);
+  } else if (command == "KICK") {
+    if (validateKick(cmd, fd))
+      doKick(cmd, fd);
+  } else if (command == "MODE") {
+    if (validateMode(cmd, fd))
+      doMode(cmd, fd);
+  } else if (command == "PASS") {
+    if (validatePass(cmd, fd))
+      doPass(cmd, fd);
+  } else if (command == "TOPIC") {
+    if (validateTopic(cmd, fd))
+      doTopic(cmd, fd);
+  } else if (command == "PART") {
+    if (validatePart(cmd, fd))
+      doPart(cmd, fd);
+  } else if (command == "CAP") {
+    if (validateCap(cmd, fd))
+      doCap(cmd, fd);
+  } else {
+    handleInvalidCommand(clients, command, fd);
   }
-  return -1;
 }
 
-void Server::dispatchCommand(ClientManager& clients, ChannelManager& channels,
-                     const TokenisedCommand &cmd, const int fd) {
-    (void)clients;
-    (void)channels;
-    
-    const std::string &command = cmd.getCommand();
-    
-    if (command == "NICK") {
-        if (validateNick(cmd, fd))
-            doNick(cmd, fd);
-    }
-    else if (command == "USER") {
-        if (validateUser(cmd, fd))
-            doUser(cmd, fd);
-    }
-    else if (command == "JOIN") {
-        if (validateJoin(cmd, fd))
-            doJoin(cmd, fd);
-    }
-    else if (command == "PRIVMSG") {
-        if (validatePrivmsg(cmd, fd))
-            doPrivmsg(cmd, fd);
-    }
-    else if (command == "QUIT") {
-        if (validateQuit(cmd, fd))
-            doQuit(cmd, fd);
-    }
-    else if (command == "PING") {
-        if (validatePing(cmd, fd))
-            doPong(cmd, fd);
-    }
-    else if (command == "KICK") {
-        if (validateKick(cmd, fd))
-            doKick(cmd, fd);
-    }
-    else if (command == "MODE") {
-        if (validateMode(cmd, fd))
-            doMode(cmd, fd);
-    }
-    else if (command == "PASS") {
-        if (validatePass(cmd, fd))
-            doPass(cmd, fd);
-    }
-    else if (command == "TOPIC") {
-        if (validateTopic(cmd, fd))
-            doTopic(cmd, fd);
-    }
-    else if (command == "PART") {
-        if (validatePart(cmd, fd))
-            doPart(cmd, fd);
-    }
-    else if (command == "CAP") {
-        if (validateCap(cmd, fd))
-            doCap(cmd, fd);
-    }
-    else {
-        handleInvalidCommand(clients, command, fd);
-    }
-}
-
-void Server::handleInvalidCommand(ClientManager& clients, const std::string &cmd,
-                          const int fd) {
-  std::string response = "421 " + clients.getNickname(fd) + " " + cmd + " :Unknown command\r\n";
+void Server::handleInvalidCommand(ClientManager &clients,
+                                  const std::string &cmd, const int fd) {
+  std::string response =
+      "421 " + clients.getNickname(fd) + " " + cmd + " :Unknown command\r\n";
   send(fd, response.c_str(), response.length(), 0);
 }
 
-
-Server::Server(int port,const std::string& password)
-    : port(port), password(password)
-{
-    setupSocket();
+Server::Server(int port, const std::string &password)
+    : port(port), password(password) {
+  setupSocket();
 }
 
-Server::~Server()
-{
-	close(server_fd);
-	close(epoll_fd); // Fermeture de epoll_fd
+Server::~Server() {
+  close(server_fd);
+  close(epoll_fd); // Fermeture de epoll_fd
 }
 
-void Server::setupSocket()
-{
-	int					opt;
-	struct sockaddr_in	server_addr;
-	struct epoll_event	server_event;
+void Server::setupSocket() {
+  int opt;
+  struct sockaddr_in server_addr;
+  struct epoll_event server_event;
 
-	// Creation de la socket serveur
-	server_fd = socket(AF_INET, SOCK_STREAM, 0);
-	if (server_fd < 0)
-	{
-		perror("socket");
-		exit(EXIT_FAILURE);
-	}
-	// Option de reutilisation des adresses
-	opt = 1;
-	if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0)
-	{
-		perror("setsockopt");
-		exit(EXIT_FAILURE);
-	}
-	// Mode non-bloquant pour la socket serveur
-	if (fcntl(server_fd, F_SETFL, O_NONBLOCK) < 0)
-	{
-		perror("fcntl");
-		exit(EXIT_FAILURE);
-	}
-	// Configuration de l'adresse du serveur
-	std::memset(&server_addr, 0, sizeof(server_addr));
-	server_addr.sin_family = AF_INET;
-	server_addr.sin_addr.s_addr = INADDR_ANY;
-	server_addr.sin_port = htons(port);
-	if (bind(server_fd, (struct sockaddr *)&server_addr,
-			sizeof(server_addr)) < 0)
-	{
-		perror("bind");
-		exit(EXIT_FAILURE);
-	}
-	if (listen(server_fd, SOMAXCONN) < 0)
-	{
-		perror("listen");
-		exit(EXIT_FAILURE);
-	}
-	// Creation de epoll_fd
-	epoll_fd = epoll_create1(0);
-	if (epoll_fd == -1)
-	{
-		perror("epoll_create1");
-		exit(EXIT_FAILURE);
-	}
-	// Ajouter la socket serveur à epoll
-	server_event.events = EPOLLIN; // Lecture
-	server_event.data.fd = server_fd;
-	if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, server_fd, &server_event) == -1)
-	{
-		perror("epoll_ctl");
-		exit(EXIT_FAILURE);
-	}
+  // Creation de la socket serveur
+  server_fd = socket(AF_INET, SOCK_STREAM, 0);
+  if (server_fd < 0) {
+    perror("socket");
+    exit(EXIT_FAILURE);
+  }
+  // Option de reutilisation des adresses
+  opt = 1;
+  if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0) {
+    perror("setsockopt");
+    exit(EXIT_FAILURE);
+  }
+  // Mode non-bloquant pour la socket serveur
+  if (fcntl(server_fd, F_SETFL, O_NONBLOCK) < 0) {
+    perror("fcntl");
+    exit(EXIT_FAILURE);
+  }
+  // Configuration de l'adresse du serveur
+  std::memset(&server_addr, 0, sizeof(server_addr));
+  server_addr.sin_family = AF_INET;
+  server_addr.sin_addr.s_addr = INADDR_ANY;
+  server_addr.sin_port = htons(port);
+  if (bind(server_fd, (struct sockaddr *)&server_addr, sizeof(server_addr)) <
+      0) {
+    perror("bind");
+    exit(EXIT_FAILURE);
+  }
+  if (listen(server_fd, SOMAXCONN) < 0) {
+    perror("listen");
+    exit(EXIT_FAILURE);
+  }
+  // Creation de epoll_fd
+  epoll_fd = epoll_create1(0);
+  if (epoll_fd == -1) {
+    perror("epoll_create1");
+    exit(EXIT_FAILURE);
+  }
+  // Ajouter la socket serveur à epoll
+  server_event.events = EPOLLIN; // Lecture
+  server_event.data.fd = server_fd;
+  if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, server_fd, &server_event) == -1) {
+    perror("epoll_ctl");
+    exit(EXIT_FAILURE);
+  }
 }
 
-void Server::run()
-{
-	struct epoll_event	events[10];
-	int					ret;
+void Server::run() {
+  struct epoll_event events[10];
+  int ret;
 
-	while (true)
-	{
-		// Attendre les evenements sur les descripteurs
-		ret = epoll_wait(epoll_fd, events, 10, -1); // 10 evenements max à gerer
-		if (ret < 0)
-		{
-			perror("epoll_wait");
-			continue ;
-		}
-		for (int i = 0; i < ret; ++i)
-		{
-			if (events[i].data.fd == server_fd)
-			{
-				// Accepter un nouveau client
-				acceptNewClient();
-			}
-			else
-			{
-				// Gerer les messages du client
-				handleClientMessage(events[i].data.fd);
-			}
-		}
-	}
+  while (true) {
+    // Attendre les evenements sur les descripteurs
+    ret = epoll_wait(epoll_fd, events, 10, -1); // 10 evenements max à gerer
+    if (ret < 0) {
+      perror("epoll_wait");
+      continue;
+    }
+    for (int i = 0; i < ret; ++i) {
+      if (events[i].data.fd == server_fd) {
+        // Accepter un nouveau client
+        acceptNewClient();
+      } else {
+        // Gerer les messages du client
+        handleClientMessage(events[i].data.fd);
+      }
+    }
+  }
 }
 
-void Server::acceptNewClient()
-{
-	struct sockaddr_in	client_addr;
-	socklen_t			addr_len;
-	int					client_fd;
-	struct epoll_event	client_event;
-	Client				*newClient;
+void Server::acceptNewClient() {
+  struct sockaddr_in client_addr;
+  socklen_t addr_len;
+  int client_fd;
+  struct epoll_event client_event;
+  Client *newClient;
 
-	addr_len = sizeof(client_addr);
-	// Accepter la connexion
-	client_fd = accept(server_fd, (struct sockaddr *)&client_addr, &addr_len);
-	if (client_fd < 0)
-	{
-		perror("accept");
-		return ;
-	}
-	// Mode non-bloquant pour le client
-	if (fcntl(client_fd, F_SETFL, O_NONBLOCK) < 0)
-	{
-		perror("fcntl");
-		close(client_fd);
-		return ;
-	}
-	// Ajouter le client à epoll
-	client_event.events = EPOLLIN; // Lecture
-	client_event.data.fd = client_fd;
-	if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, client_fd, &client_event) == -1)
-	{
-		perror("epoll_ctl");
-		close(client_fd);
-		return ;
-	}
-	// Créer un objet Client pour gérer les informations
-	newClient = new Client(client_fd);
-	newClient->hostname = (inet_ntoa(client_addr.sin_addr));
-	_clients.addClient(newClient);
-	std::cout << "Nouveau client connecté : " << newClient->hostname << std::endl;
+  addr_len = sizeof(client_addr);
+  // Accepter la connexion
+  client_fd = accept(server_fd, (struct sockaddr *)&client_addr, &addr_len);
+  if (client_fd < 0) {
+    perror("accept");
+    return;
+  }
+  // Mode non-bloquant pour le client
+  if (fcntl(client_fd, F_SETFL, O_NONBLOCK) < 0) {
+    perror("fcntl");
+    close(client_fd);
+    return;
+  }
+  // Ajouter le client à epoll
+  client_event.events = EPOLLIN; // Lecture
+  client_event.data.fd = client_fd;
+  if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, client_fd, &client_event) == -1) {
+    perror("epoll_ctl");
+    close(client_fd);
+    return;
+  }
+  // Créer un objet Client pour gérer les informations
+  newClient = new Client(client_fd);
+  newClient->hostname = (inet_ntoa(client_addr.sin_addr));
+  _clients.addClient(newClient);
+  std::cout << "Nouveau client connecté : " << newClient->hostname << std::endl;
 }
 
 void Server::handleClientMessage(int fd) {
-    char buffer[512];
-    int bytes_received = recv(fd, buffer, sizeof(buffer) - 1, 0);
+  char buffer[512];
+  int bytes_received = recv(fd, buffer, sizeof(buffer) - 1, 0);
 
-    if (bytes_received <= 0)
-    {
-        std::cout << "Client déconnecté (fd: " << fd << ")" << std::endl;
-        close(fd);
-        epoll_ctl(epoll_fd, EPOLL_CTL_DEL, fd, NULL);
-        // delete _clients[fd];
-        _clients.removeClient(fd);
-        return;
-    }
+  if (bytes_received <= 0) {
+    std::cout << "Client déconnecté (fd: " << fd << ")" << std::endl;
+    close(fd);
+    epoll_ctl(epoll_fd, EPOLL_CTL_DEL, fd, NULL);
+    // delete _clients[fd];
+    _clients.removeClient(fd);
+    return;
+  }
 
-    buffer[bytes_received] = '\0';
-    std::string message(buffer);
-    
-    // Ajouter \r\n si nécessaire
-    if (message.length() >= 2 && message.substr(message.length() - 2) != "\r\n") {
-        message += "\r\n";
-    }
-    
-    handleClientMessage(message, fd);
+  buffer[bytes_received] = '\0';
+  std::string message(buffer);
+
+  // Ajouter \r\n si nécessaire
+  if (message.length() >= 2 && message.substr(message.length() - 2) != "\r\n") {
+    message += "\r\n";
+  }
+
+  handleClientMessage(message, fd);
 }
 
 void Server::handleClientMessage(const std::string &message, int fd) {
-    std::stringstream ss(message);
-    std::string line;
+  std::stringstream ss(message);
+  std::string line;
 
-    while (std::getline(ss, line, '\n')) {
-        if (line.empty())
-            continue;
+  while (std::getline(ss, line, '\n')) {
+    if (line.empty())
+      continue;
 
-        TokenisedCommand cmd = tokenize(line);
-        if (cmd.isValid()) {
-            std::cout << "Processing line: " << line << std::endl;
-            cmd.print();
-            std::cout << std::endl;
+    TokenisedCommand cmd = tokenize(line);
+    if (cmd.isValid()) {
+      std::cout << "Processing line: " << line << std::endl;
+      cmd.print();
+      std::cout << std::endl;
 
-            // Vérifier l'authentification sauf pour les commandes CAP et PASS
-            if (cmd.getCommand() != "CAP" && cmd.getCommand() != "PASS" && 
-                !_clients.getClient(fd)->isAuthenticated) {
-                std::string errorMsg = "ERROR :Vous devez d'abord vous authentifier avec PASS\r\n";
-                send(fd, errorMsg.c_str(), errorMsg.size(), 0);
-                continue;
-            }
+      // Vérifier l'authentification sauf pour les commandes CAP et PASS
+      if (cmd.getCommand() != "CAP" && cmd.getCommand() != "PASS" &&
+          !_clients.getClient(fd)->isAuthenticated) {
+        std::string errorMsg =
+            "ERROR :Vous devez d'abord vous authentifier avec PASS\r\n";
+        send(fd, errorMsg.c_str(), errorMsg.size(), 0);
+        continue;
+      }
 
-            dispatchCommand(_clients, _channels, cmd, fd);
-        }
+      dispatchCommand(_clients, _channels, cmd, fd);
     }
+  }
 }

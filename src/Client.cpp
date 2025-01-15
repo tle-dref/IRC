@@ -1,27 +1,25 @@
 #include "Client.hpp"
 
 Client::Client()
-    : fd(-1), nickname(""), username(""), hostname(""),
-      isAuthenticated(false) {}
+    : fd(-1), nickname(""), username(""), hostname(""), isAuthenticated(false) {
+}
 
-Client::Client(int fd) : fd(fd), nickname(""), username(""), hostname(""),
-      isAuthenticated(false) {}
+Client::Client(int fd)
+    : fd(fd), nickname(""), username(""), hostname(""), isAuthenticated(false) {
+}
 
 Client::Client(std::string nickname)
-    : nickname(nickname), username(""), hostname(""),
-      isAuthenticated(false) {}
+    : nickname(nickname), username(""), hostname(""), isAuthenticated(false) {}
 
 Client::~Client() {}
 
-void ClientManager::addClient(Client *user) {
-    _clients[user->fd] = user;
-}
+void ClientManager::addClient(Client *user) { _clients[user->fd] = user; }
 
 void ClientManager::removeClient(int fd) {
-    if (_clients.find(fd) != _clients.end()) {
-        delete _clients[fd];
-        _clients.erase(fd);
-    }
+  if (_clients.find(fd) != _clients.end()) {
+    delete _clients[fd];
+    _clients.erase(fd);
+  }
 }
 
 void ClientManager::updateNickname(int fd, std::string nickname) {
@@ -29,18 +27,17 @@ void ClientManager::updateNickname(int fd, std::string nickname) {
     setNickname(fd, nickname);
 }
 
-void ClientManager::msgClient(std::string message, std::string clientName, int fd)
-{
-    std::cout << "client name " << clientName << std::endl;
-    int fdClient = getFd(clientName);
-    if (fdClient == -1)
-    {
-        std::string response = "401 " + clientName + " :No such nick/channel\n";
-        send(fd, response.c_str(), response.size(), 0);
-        return;
-    }
-    std::cout << "fdClient :" << fdClient << std::endl;
-    send(fdClient, message.c_str(), message.size(), 0);
+void ClientManager::msgClient(std::string message, std::string clientName,
+                              int fd) {
+  std::cout << "client name " << clientName << std::endl;
+  int fdClient = getFd(clientName);
+  if (fdClient == -1) {
+    std::string response = "401 " + clientName + " :No such nick/channel\n";
+    send(fd, response.c_str(), response.size(), 0);
+    return;
+  }
+  std::cout << "fdClient :" << fdClient << std::endl;
+  send(fdClient, message.c_str(), message.size(), 0);
 }
 
 // void ClientManager::printClient(int fd) const {
@@ -80,7 +77,7 @@ void ClientManager::msgClient(std::string message, std::string clientName, int f
 Client *ClientManager::getClient(int fd) { return _clients[fd]; }
 
 int ClientManager::getFd(std::string nickname) {
-  std::map<int, Client*>::iterator it = _clients.begin();
+  std::map<int, Client *>::iterator it = _clients.begin();
   while (it != _clients.end()) {
     if (it->second->nickname == nickname)
       return it->first;
@@ -89,21 +86,25 @@ int ClientManager::getFd(std::string nickname) {
   return -1;
 }
 
-std::string ClientManager::getNickname(int fd) { return _clients[fd]->nickname; }
+std::string ClientManager::getNickname(int fd) {
+  return _clients[fd]->nickname;
+}
 
 std::string ClientManager::getClientname(int fd) {
   return _clients[fd]->username;
 }
 
-std::string ClientManager::getHostname(int fd) { return _clients[fd]->hostname; }
+std::string ClientManager::getHostname(int fd) {
+  return _clients[fd]->hostname;
+}
 
-const std::map<int, Client*> &ClientManager::getClients() const {
+const std::map<int, Client *> &ClientManager::getClients() const {
   return _clients;
 }
 // ------------------checkers------------------
 
 bool ClientManager::usernameExists(std::string username) {
-  std::map<int, Client*>::iterator it = _clients.begin();
+  std::map<int, Client *>::iterator it = _clients.begin();
   while (it != _clients.end()) {
     if (it->second->username == username)
       return true;
@@ -113,7 +114,7 @@ bool ClientManager::usernameExists(std::string username) {
 }
 
 bool ClientManager::nicknameExists(std::string nickname) {
-  std::map<int, Client*>::iterator it = _clients.begin();
+  std::map<int, Client *>::iterator it = _clients.begin();
   while (it != _clients.end()) {
     if (it->second->nickname == nickname)
       return true;
@@ -147,8 +148,9 @@ void ClientManager::setHostname(int fd, std::string hostname) {
 }
 
 ClientManager::~ClientManager() {
-    for (std::map<int, Client*>::iterator it = _clients.begin(); it != _clients.end(); ++it) {
-        delete it->second;
-    }
-    _clients.clear();
+  for (std::map<int, Client *>::iterator it = _clients.begin();
+       it != _clients.end(); ++it) {
+    delete it->second;
+  }
+  _clients.clear();
 }

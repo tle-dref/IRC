@@ -37,10 +37,13 @@ TokenisedCommand tokenize(const std::string &rawCommand) {
 
   // Nettoyer la commande
   std::string cleanCommand = rawCommand;
-  while (!cleanCommand.empty() && (cleanCommand[0] == '\r' || cleanCommand[0] == '\x04'))
+  while (!cleanCommand.empty() &&
+         (cleanCommand[0] == '\r' || cleanCommand[0] == '\x04'))
     cleanCommand.erase(0, 1);
-  while (!cleanCommand.empty() && (cleanCommand[cleanCommand.length()-1] == '\r' || cleanCommand[cleanCommand.length()-1] == '\x04'))
-    cleanCommand.erase(cleanCommand.length()-1, 1);
+  while (!cleanCommand.empty() &&
+         (cleanCommand[cleanCommand.length() - 1] == '\r' ||
+          cleanCommand[cleanCommand.length() - 1] == '\x04'))
+    cleanCommand.erase(cleanCommand.length() - 1, 1);
 
   TokenisedCommand result;
   std::istringstream stream(cleanCommand);
@@ -53,7 +56,8 @@ TokenisedCommand tokenize(const std::string &rawCommand) {
 
   // 2. Arguments
   while (stream >> token) {
-    // Si on trouve un token qui commence par ':', on prend tout le reste de la ligne
+    // Si on trouve un token qui commence par ':', on prend tout le reste de la
+    // ligne
     if (token[0] == ':') {
       std::string trailing;
       std::getline(stream, trailing);
