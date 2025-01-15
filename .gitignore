@@ -1,2 +1,4 @@
-obj/*
+obj/
 ircserv
+todo
+memory_test
