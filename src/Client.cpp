@@ -19,6 +19,7 @@ void ClientManager::removeClient(int fd) {
   if (_clients.find(fd) != _clients.end()) {
     delete _clients[fd];
     _clients.erase(fd);
+    close(fd);
   }
 }
 
