@@ -6,7 +6,7 @@
 /*   By: dalebran <dalebran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/12 22:09:05 by gbruscan          #+#    #+#             */
-/*   Updated: 2025/01/16 03:18:22 by dalebran         ###   ########.fr       */
+/*   Updated: 2025/01/16 03:53:10 by dalebran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,15 +41,16 @@ const std::vector<std::string> &Server::getCommands() {
     commands.push_back("PASS");
     commands.push_back("TOPIC");
     commands.push_back("PART");
+    commands.push_back("CAP");
+    commands.push_back("INVITE");
   }
   return commands;
 }
 
 void Server::dispatchCommand(ClientManager &clients, ChannelManager &channels,
                              const TokenisedCommand &cmd, const int fd) {
-  (void)clients;
-  (void)channels;
 
+  (void)channels;
   const std::string &command = cmd.getCommand();
 
   if (command == "NICK") {
@@ -88,6 +89,9 @@ void Server::dispatchCommand(ClientManager &clients, ChannelManager &channels,
   } else if (command == "CAP") {
     if (validateCap(cmd, fd))
       doCap(cmd, fd);
+  } else if (command == "INVITE") {
+    if (validateInvite(cmd, fd))
+      doInvite(cmd, fd);
   } else {
     handleInvalidCommand(clients, command, fd);
   }

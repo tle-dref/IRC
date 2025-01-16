@@ -1,9 +1,9 @@
 #include "Channel.hpp"
 
-Channel::Channel() : userLimit(-1), inviteOnly(false), topicRestricted(false) {}
+Channel::Channel() : userLimit(-1), inviteOnly(false), topicRestricted(true) {}
 
 Channel::Channel(std::string name)
-    : name(name), userLimit(-1), inviteOnly(false), topicRestricted(false) {}
+    : name(name), userLimit(-1), inviteOnly(false), topicRestricted(true) {}
 
 Channel::~Channel() {}
 
@@ -16,6 +16,12 @@ void ChannelManager::printMyChannels(int fd) {
     }
   }
   std::cout << std::endl;
+}
+
+void ChannelManager::inviteUser(std::string channelName, Client *user) {
+  _channels[channelName]->invited.insert(user->fd);
+  std::cout << "user " << user->fd << " has been invited to channel "
+            << channelName << std::endl;
 }
 
 void ChannelManager::msgChannel(std::string message, std::string channelName,
@@ -198,6 +204,11 @@ bool ChannelManager::isFull(std::string channelName) {
 bool ChannelManager::isUserInChannel(std::string channelName, int fd) {
   return (_channels[channelName]->users.find(fd) !=
           _channels[channelName]->users.end());
+}
+
+bool ChannelManager::isUserInvited(std::string channelName, int fd) {
+  return (_channels[channelName]->invited.find(fd) !=
+          _channels[channelName]->invited.end());
 }
 
 void ChannelManager::notifyChannel(std::string message,

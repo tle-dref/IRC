@@ -24,6 +24,7 @@ struct Channel {
   std::set<int> users;     // Liste des utilisateurs par fd
   std::set<int> operators; // Liste des opérateurs par fd
   std::set<int> banned;    // List des bans par fd
+  std::set<int> invited;   // Liste des utilisateurs invités
   int userLimit;           // Limite d'utilisateurs
   std::string password;    // Mot de passe du channel
   bool inviteOnly;         // Mode sur invitation
@@ -52,6 +53,7 @@ public:
   void addOperator(std::string channelName, Client *user);
   void notifyChannel(std::string message, std::string chanName);
   void printMyChannels(int fd);
+  void inviteUser(std::string channelName, Client *user);
 
   // getter
   int getNbrUsersOn(const std::string &channelName);
@@ -79,5 +81,6 @@ public:
   bool isPasswordProtected(std::string channelName);
   bool isFull(std::string channelName);
   bool isUserInChannel(std::string channelName, int fd);
+  bool isUserInvited(std::string channelName, int fd);
   bool isBanned(const std::string &channelName, int fd);
 };
