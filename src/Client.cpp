@@ -11,7 +11,9 @@ Client::Client(int fd)
 Client::Client(std::string nickname)
     : nickname(nickname), username(""), hostname(""), isAuthenticated(false) {}
 
-Client::~Client() {}
+Client::~Client() {
+  close (fd);
+}
 
 void ClientManager::addClient(Client *user) { _clients[user->fd] = user; }
 

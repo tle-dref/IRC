@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dalebran <dalebran@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gbruscan <gbruscan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/12 22:09:29 by gbruscan          #+#    #+#             */
-/*   Updated: 2025/01/16 19:19:41 by dalebran         ###   ########.fr       */
+/*   Updated: 2025/01/16 23:13:10 by gbruscan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,6 +128,8 @@ public:
   void tellPussInBoots(int fd);
   void displayWelcomeMessage(int fd);
   void botResponse(const std::string &msg, int fd);
+
+		static void	sigInt_Hdl(int signo);
 };
 
 #endif

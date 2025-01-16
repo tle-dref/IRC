@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dalebran <dalebran@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gbruscan <gbruscan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/12 22:09:05 by gbruscan          #+#    #+#             */
-/*   Updated: 2025/01/16 19:44:22 by dalebran         ###   ########.fr       */
+/*   Updated: 2025/01/16 23:20:34 by gbruscan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,11 @@
 #include <sstream>
 #include <sys/epoll.h>
 #include <unistd.h>
+#include <signal.h>
 
 struct Client;
+
+static bool sigStop = false;
 
 const std::vector<std::string> &Server::getCommands() {
   static std::vector<std::string> commands;
@@ -181,7 +184,9 @@ void Server::run() {
   int ret;
 
   createBot();
-  while (true) {
+	signal(SIGINT, Server::sigInt_Hdl);
+	
+	while (sigStop == 0) {
     // Attendre les evenements sur les descripteurs
     ret = epoll_wait(epoll_fd, events, 10, -1); // 10 evenements max à gerer
     if (ret < 0) {
@@ -293,4 +298,13 @@ void Server::handleClientMessage(const std::string &message, int fd) {
       dispatchCommand(_clients, _channels, cmd, fd);
     }
   }
+}
+
+void    Server::sigInt_Hdl(int signo)
+{
+    if (signo == SIGINT)
+	{
+        sigStop = true;
+		std::cerr << "\b\b  \b\b" << std::endl; // flex pour effacer ^C
+	}
 }
