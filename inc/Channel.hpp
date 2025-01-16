@@ -50,6 +50,7 @@ public:
   void removeUser(std::string channelName, Client user);
   void banUser(const std::string &chanName, int fd);
   void unbanUser(const std::string &chanName, int fd);
+  void removeOperator(std::string channelName, int fd);
   void addOperator(std::string channelName, Client *user);
   void notifyChannel(std::string message, std::string chanName);
   void printMyChannels(int fd);

@@ -37,7 +37,136 @@ bool Server::validateMode(const TokenisedCommand &cmd, int fd) {
   return (true);
 }
 
+void Server::doI(std::string channelName, int sign, int fd) {
+  if (sign == 0) {
+    if (_channels.isOperator(channelName, fd)) {
+      _channels.setInviteOnly(channelName, false);
+      _channels.notifyChannel(":" + _clients.getClientname(fd) + " MODE " +
+                                  channelName + " -i\r\n",
+                              channelName);
+    } else {
+      error_482(fd, _clients.getClientname(fd), channelName);
+    }
+  } else {
+    if (_channels.isOperator(channelName, fd)) {
+      _channels.setInviteOnly(channelName, true);
+      _channels.notifyChannel(":" + _clients.getClientname(fd) + " MODE " +
+                                  channelName + " +i\r\n",
+                              channelName);
+    } else {
+      error_482(fd, _clients.getClientname(fd), channelName);
+    }
+  }
+}
+
+void Server::doT(std::string channelName, int sign, int fd) {
+  if (sign == 0) {
+    if (_channels.isOperator(channelName, fd)) {
+      _channels.setTopicRestricted(channelName, false);
+      _channels.notifyChannel(":" + _clients.getClientname(fd) + " MODE " +
+                                  channelName + " -t\r\n",
+                              channelName);
+    } else {
+      error_482(fd, _clients.getClientname(fd), channelName);
+    }
+  } else {
+    if (_channels.isOperator(channelName, fd)) {
+      _channels.setTopicRestricted(channelName, true);
+      _channels.notifyChannel(":" + _clients.getClientname(fd) + " MODE " +
+                                  channelName + " +t\r\n",
+                              channelName);
+    } else {
+      error_482(fd, _clients.getClientname(fd), channelName);
+    }
+  }
+}
+
+void Server::doK(std::string channelName, int sign, int fd,
+                 const TokenisedCommand &cmd) {
+  if (sign == 0) {
+    if (_channels.isOperator(channelName, fd)) {
+      _channels.setPassword(channelName, "");
+      _channels.notifyChannel(":" + _clients.getClientname(fd) + " MODE " +
+                                  channelName + " -k\r\n",
+                              channelName);
+    } else {
+      error_482(fd, _clients.getClientname(fd), channelName);
+    }
+  } else {
+    if (_channels.isOperator(channelName, fd)) {
+      _channels.setPassword(channelName, cmd.getArguments()[2]);
+      _channels.notifyChannel(":" + _clients.getClientname(fd) + " MODE " +
+                                  channelName + " +k\r\n",
+                              channelName);
+    } else {
+      error_482(fd, _clients.getClientname(fd), channelName);
+    }
+  }
+}
+
+void Server::doO(std::string channelName, int sign, int fd) {
+  if (sign == 0) {
+    if (_channels.isOperator(channelName, fd)) {
+      _channels.removeOperator(channelName, fd);
+      _channels.notifyChannel(":" + _clients.getClientname(fd) + " MODE " +
+                                  channelName + " -o\r\n",
+                              channelName);
+    } else {
+      error_482(fd, _clients.getClientname(fd), channelName);
+    }
+  } else {
+    if (_channels.isOperator(channelName, fd)) {
+      _channels.addOperator(channelName, _clients.getClient(fd));
+      _channels.notifyChannel(":" + _clients.getClientname(fd) + " MODE " +
+                                  channelName + " +o\r\n",
+                              channelName);
+    } else {
+      error_482(fd, _clients.getClientname(fd), channelName);
+    }
+  }
+}
+void Server::doL(std::string channelName, int sign, int fd) {
+  if (sign == 0) {
+    if (_channels.isOperator(channelName, fd)) {
+      _channels.setUserLimit(channelName, false);
+      _channels.notifyChannel(":" + _clients.getClientname(fd) + " MODE " +
+                                  channelName + " -l\r\n",
+                              channelName);
+    } else {
+      error_482(fd, _clients.getClientname(fd), channelName);
+    }
+  } else {
+    if (_channels.isOperator(channelName, fd)) {
+      _channels.setUserLimit(channelName, true);
+      _channels.notifyChannel(":" + _clients.getClientname(fd) + " MODE " +
+                                  channelName + " +l\r\n",
+                              channelName);
+    } else {
+      error_482(fd, _clients.getClientname(fd), channelName);
+    }
+  }
+}
+
 void Server::doMode(const TokenisedCommand &cmd, int fd) {
-  (void)cmd;
-  (void)fd;
+  int sign;
+  char c;
+
+  std::string channelName = cmd.getArguments()[0];
+  if (cmd.getArguments()[1][0] == '-')
+    sign = 0;
+  else
+    sign = 1;
+  for (size_t i = 1; i < cmd.getArguments()[1].length(); ++i) {
+    c = cmd.getArguments()[1][i];
+    if (c == 'i')
+      doI(channelName, sign, fd);
+    else if (c == 't')
+      doT(channelName, sign, fd);
+    else if (c == 'k')
+      doK(channelName, sign, fd, cmd);
+    else if (c == 'o')
+      doO(channelName, sign, fd);
+    else if (c == 'l')
+      doL(channelName, sign, fd);
+  }
 }

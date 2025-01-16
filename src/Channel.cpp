@@ -81,6 +81,12 @@ void ChannelManager::addOperator(std::string channelName, Client *user) {
   _channels[channelName]->operators.insert(user->fd);
 }
 
+void ChannelManager::removeOperator(std::string channelName, int fd) {
+  if (!channelExists(channelName))
+    return;
+  _channels[channelName]->operators.erase(fd);
+}
+
 void ChannelManager::addChannel(std::string channelName, Channel *channel) {
   _channels[channelName] = channel;
 }

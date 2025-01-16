@@ -6,7 +6,7 @@
 /*   By: dalebran <dalebran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/12 22:09:29 by gbruscan          #+#    #+#             */
-/*   Updated: 2025/01/16 03:21:13 by dalebran         ###   ########.fr       */
+/*   Updated: 2025/01/16 06:56:25 by dalebran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,6 +107,13 @@ public:
   void doTopic(const TokenisedCommand &cmd, int fd);
   bool validateInvite(const TokenisedCommand &cmd, int fd);
   void doInvite(const TokenisedCommand &cmd, int fd);
+
+  void doI(std::string channelName, int sign, int fd);
+  void doT(std::string channelName, int sign, int fd);
+  void doK(std::string channelName, int sign, int fd,
+           const TokenisedCommand &cmd);
+  void doO(std::string channelName, int sign, int fd);
+  void doL(std::string channelName, int sign, int fd);
 };
 
 #endif
