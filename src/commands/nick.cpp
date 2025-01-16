@@ -27,5 +27,7 @@ bool Server::validateNick(const TokenisedCommand &cmd, int fd) {
 
 void Server::doNick(const TokenisedCommand &cmd, int fd) {
   std::string nick = cmd.getArguments()[0];
+    std::string msg = ":" + _clients.getClient(fd)->nickname + "!@GLMRC NICK " + nick + "\n";
   _clients.getClient(fd)->nickname = nick;
+    send(fd, msg.c_str(), msg.size(), 0);
 }

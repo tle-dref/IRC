@@ -129,9 +129,8 @@ void error_431(int fd, std::string client) {
 void error_432(int fd, std::string client, std::string target_nick) {
   // if (client == nullptr || !client->isConnected())
   // 	return;
-
-  std::string errorMsg = std::string(":") + SERVER_NAME + " 432 " + client +
-                         target_nick + ":Erroneus nickname" + "\n";
+  (void)target_nick;
+  std::string errorMsg = std::string(":") + SERVER_NAME + " 432 " + client + ":Erroneus nickname" + "\n";
   send(fd, errorMsg.c_str(), errorMsg.size(), 0);
   std::cout << "432 ERR_ERRONEUSNICKNAME" << std::endl;
   return;
