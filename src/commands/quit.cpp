@@ -12,6 +12,10 @@ void Server::doQuit(const TokenisedCommand &cmd, int fd) {
   if (!cmd.getArguments().empty()) {
     quitMsg = cmd.getArguments()[0];
   }
+  else {
+      quitMsg = "Leaving";
+  }
+
 
   const std::map<std::string, Channel *> &inChannel = _channels.getChannels();
   for (std::map<std::string, Channel *>::const_iterator it = inChannel.begin();
@@ -29,4 +33,6 @@ void Server::doQuit(const TokenisedCommand &cmd, int fd) {
        it != inChannel.end(); ++it) {
     _channels.removeUser(it->first, fd);
   }
+   std::string msg = ":" + _clients.getClient(fd)->nickname + "!@GLMRC QUIT " + quitMsg + "\r\n";
+   _clients.removeClient(fd);
 }

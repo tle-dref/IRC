@@ -12,16 +12,16 @@ Client::Client(std::string nickname)
     : nickname(nickname), username(""), hostname(""), isAuthenticated(false) {}
 
 Client::~Client() {
-  close (fd);
+  //close (fd);
 }
 
 void ClientManager::addClient(Client *user) { _clients[user->fd] = user; }
 
 void ClientManager::removeClient(int fd) {
   if (_clients.find(fd) != _clients.end()) {
+    close(fd);
     delete _clients[fd];
     _clients.erase(fd);
-    close(fd);
   }
 }
 
