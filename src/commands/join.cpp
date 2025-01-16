@@ -13,11 +13,29 @@ std::vector<std::string> splitString(const std::string &str, char delim) {
 }
 
 bool Server::validateJoin(const TokenisedCommand &cmd, int fd) {
-  if (cmd.getArguments().empty()) {
-    error_461(fd, _clients.getClientname(fd), cmd.getCommand());
-    return false;
-  }
-  return true;
+    const std::string &channelName = cmd.getArguments()[0];
+
+    if (cmd.getArguments().empty()) {
+      error_461(fd, _clients.getClientname(fd), cmd.getCommand());
+      return false;
+    }
+    if (_channels.channelExists(channelName))
+    {
+        if (_channels.isFull(channelName))
+        {
+            error_471(fd, _clients.getClientname(fd), channelName);
+            return false;
+        }
+    }
+    if (_channels.channelExists(channelName))
+    {
+        if (_channels.isUserInChannel(channelName, fd))
+        {
+            error_443(fd, _clients.getClientname(fd), channelName);
+            return false;
+        }
+    }
+    return true;
 }
 
 void Server::doJoin(const TokenisedCommand &cmd, int fd) {
