@@ -23,9 +23,15 @@ bool Server::validatePart(const TokenisedCommand &cmd, int fd) {
 
 void Server::doPart(const TokenisedCommand &cmd, int fd) {
   std::string channelName = cmd.getArguments()[0];
+  std::string partMsg;
 
-  std::string partMsg =
-      ":" + _clients.getClient(fd)->nickname + " PART " + channelName + "\r\n";
+  if (cmd.getArguments().size() < 2) {
+    partMsg = ":" + _clients.getClient(fd)->nickname + " PART " + channelName +
+              "\r\n";
+  } else {
+    partMsg = ":" + _clients.getClient(fd)->nickname + " PART " + channelName +
+              " :" + cmd.getArguments()[1] + "\r\n";
+  }
   _channels.notifyChannel(partMsg, channelName);
   _channels.removeUser(channelName, fd);
 }
