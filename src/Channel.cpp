@@ -1,9 +1,9 @@
 #include "Channel.hpp"
 
-Channel::Channel() : userLimit(-1), inviteOnly(false), topicRestricted(true) {}
+Channel::Channel() : userLimit(-1), inviteOnly(false), topicRestricted(false) {}
 
 Channel::Channel(std::string name)
-    : name(name), userLimit(-1), inviteOnly(false), topicRestricted(true) {}
+    : name(name), userLimit(-1), inviteOnly(false), topicRestricted(false) {}
 
 Channel::~Channel() {}
 

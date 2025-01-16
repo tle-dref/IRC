@@ -6,7 +6,7 @@
 /*   By: dalebran <dalebran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/12 22:09:29 by gbruscan          #+#    #+#             */
-/*   Updated: 2025/01/15 22:28:27 by dalebran         ###   ########.fr       */
+/*   Updated: 2025/01/16 03:21:13 by dalebran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,8 @@ public:
   void doMode(const TokenisedCommand &cmd, int fd);
   bool validateTopic(const TokenisedCommand &cmd, int fd);
   void doTopic(const TokenisedCommand &cmd, int fd);
+  bool validateInvite(const TokenisedCommand &cmd, int fd);
+  void doInvite(const TokenisedCommand &cmd, int fd);
 };
 
 #endif
