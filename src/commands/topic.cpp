@@ -18,7 +18,7 @@ bool Server::validateTopic(const TokenisedCommand &cmd, int fd) {
     return false;
   }
 
-  if (!_channels.isOperator(channelName, fd)) {
+  if (!_channels.isOperator(channelName, fd) && _channels.getChannel(channelName)->topicRestricted == true) {
     error_482(fd, _clients.getClientname(fd), channelName);
     return false;
   }
@@ -27,6 +27,11 @@ bool Server::validateTopic(const TokenisedCommand &cmd, int fd) {
 }
 
 void Server::doTopic(const TokenisedCommand &cmd, int fd) {
-  (void)cmd;
-  (void)fd;
+    const std::string &channelName = cmd.getArguments()[0];
+    const std::string &topic = cmd.getArguments()[1];
+
+    _channels.setTopic(channelName, topic);
+    std::string topicMsg = ":" + _clients.getClient(fd)->nickname + " TOPIC " +
+                             channelName + " :" + topic + "\r\n";
+    _channels.notifyChannel(topicMsg, channelName);
 }
