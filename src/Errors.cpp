@@ -348,7 +348,7 @@ void error_471(int fd, std::string client, std::string channel) {
 }
 
 // void error_472(int fd, std::string client, std::string mode_char);
-void error_472(int fd, std::string client, std::string mode_char) {
+void error_472(int fd, std::string client, char mode_char) {
   // if (client == nullptr || !client->isConnected())
   // 	return;
 

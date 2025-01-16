@@ -34,7 +34,7 @@ void error_451(int fd, std::string client);
 void error_464(int fd, std::string client);
 void error_465(int fd, std::string client);
 void error_471(int fd, std::string client, std::string channel);
-void error_472(int fd, std::string client, std::string mode_char);
+void error_472(int fd, std::string client, char mode_char);
 void error_473(int fd, std::string client, std::string channel);
 void error_474(int fd, std::string client, std::string channel);
 void error_475(int fd, std::string client, std::string channel);
