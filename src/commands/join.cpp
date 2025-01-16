@@ -20,6 +20,24 @@ void Server::doJoin(const TokenisedCommand &cmd, int fd) {
   }
 
   // Ajouter l'utilisateur au canal
+  if (_channels.getChannel(channelName)->inviteOnly)
+  {
+    if (_channels.isUserInvited(channelName, fd))
+        if (_channels.getChannel(channelName)->password.empty())
+        _channels.addUser(channelName, _clients.getClient(fd));
+        else{
+            if(cmd.getArguments()[1] == _channels.getChannel(channelName)->password)
+            _channels.addUser(channelName, _clients.getClient(fd));
+            else{
+                error_475(fd, _clients.getClientname(fd), channelName);
+                return;
+            }
+        }
+    else{
+        error_473(fd, _clients.getClientname(fd), channelName);
+        return;
+    }
+  }
   if (_channels.getChannel(channelName)->password.empty())
     _channels.addUser(channelName, _clients.getClient(fd));
   else{
