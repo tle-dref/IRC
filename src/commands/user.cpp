@@ -9,7 +9,7 @@ bool Server::validateUser(const TokenisedCommand &cmd, int fd) {
     send(fd, errorMsg.c_str(), errorMsg.size(), MSG_NOSIGNAL);
     return false;
   }
-  return cmd.getArguments().size() >= 4;
+  return cmd.getArguments().size() >= 1;
 }
 
 void Server::doUser(const TokenisedCommand &cmd, int fd) {
@@ -22,7 +22,7 @@ void Server::doUser(const TokenisedCommand &cmd, int fd) {
 
   // Envoyer le message de bienvenue
   std::string welcomeMsg =
-      ":localhost 001 " + client->nickname + " :Welcome to the IRC server\r\n" +
+      ":localhost 001 " + client->nickname + " :Welcome to the GLMRC server " + client->username + "\r\n" +
       ":localhost 002 " + client->nickname +
       " :Your host is localhost, running version 1.0\r\n" + ":localhost 003 " +
       client->nickname + " :This server was created today\r\n" +

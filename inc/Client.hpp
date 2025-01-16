@@ -42,7 +42,7 @@ public:
   std::string getClientname(int fd);
   std::string getHostname(int fd);
   Client *getClient(int fd);
-  const std::map<int, Client *> &getClients() const;
+  std::map<int, Client *>& getClients();
   void updateNickname(int fd, std::string nickname);
 
   // setter

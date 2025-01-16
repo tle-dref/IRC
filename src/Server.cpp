@@ -113,6 +113,20 @@ Server::Server(int port, const std::string &password)
 Server::~Server() {
   close(server_fd);
   close(epoll_fd); // Fermeture de epoll_fd
+  if (!_clients.getClients().empty())
+  {
+      std::map<int, Client *>::iterator it = _clients.getClients().begin();
+      for (; it != _clients.getClients().end(); ++it)
+      {
+          if (_clients.userExists(it->first))
+          {
+            std::cout << "Client déconnecté (fd: " << it->first << ")" << std::endl;
+            close(it->first);
+            if (it->second)
+                delete it->second;
+          }
+      }
+  }
 }
 
 void Server::createBot() {
@@ -185,7 +199,7 @@ void Server::run() {
 
   createBot();
 	signal(SIGINT, Server::sigInt_Hdl);
-	
+
 	while (sigStop == 0) {
     // Attendre les evenements sur les descripteurs
     ret = epoll_wait(epoll_fd, events, 10, -1); // 10 evenements max à gerer

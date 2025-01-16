@@ -101,7 +101,7 @@ std::string ClientManager::getHostname(int fd) {
   return _clients[fd]->hostname;
 }
 
-const std::map<int, Client *> &ClientManager::getClients() const {
+std::map<int, Client *> &ClientManager::getClients() {
   return _clients;
 }
 // ------------------checkers------------------
@@ -151,9 +151,9 @@ void ClientManager::setHostname(int fd, std::string hostname) {
 }
 
 ClientManager::~ClientManager() {
-  for (std::map<int, Client *>::iterator it = _clients.begin();
-       it != _clients.end(); ++it) {
-    delete it->second;
-  }
-  _clients.clear();
+  // for (std::map<int, Client *>::iterator it = _clients.begin();
+  //      it != _clients.end(); ++it) {
+  //   delete it->second;
+  //}
+  //_clients.clear();
 }
