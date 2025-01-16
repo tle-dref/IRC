@@ -32,7 +32,7 @@ void ChannelManager::msgChannel(std::string message, std::string channelName,
       it++;
       continue;
     }
-    send(*it, message.c_str(), message.size(), 0);
+    send(*it, message.c_str(), message.size(), MSG_NOSIGNAL);
     it++;
   }
 }
@@ -222,7 +222,7 @@ void ChannelManager::notifyChannel(std::string message,
   std::set<int>::iterator it = _channels[channelName]->users.begin();
   while (it != _channels[channelName]->users.end()) {
     std::cout << "sending message to " << *it << std::endl;
-    send(*it, message.c_str(), message.size(), 0);
+    send(*it, message.c_str(), message.size(), MSG_NOSIGNAL);
     it++;
   }
 }

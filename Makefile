@@ -7,7 +7,7 @@ SRCDIR      = src
 INCDIR      = inc
 OBJDIR      = obj
 
-SRC         = main Channel Client Tokenisation Server Errors
+SRC         = main Channel Client Tokenisation Server Errors Bot
 SRC_CMDS    = join kick mode msg nick part pass ping quit topic user cap invite
 
 SRCS        = $(addprefix $(SRCDIR)/, $(addsuffix .cpp, $(SRC)))

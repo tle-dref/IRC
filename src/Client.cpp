@@ -29,15 +29,15 @@ void ClientManager::updateNickname(int fd, std::string nickname) {
 
 void ClientManager::msgClient(std::string message, std::string clientName,
                               int fd) {
-  std::cout << "client name " << clientName << std::endl;
+  std::cout << "client name " << clientName << " | client fd " << fd
+            << std::endl;
   int fdClient = getFd(clientName);
   if (fdClient == -1) {
     std::string response = "401 " + clientName + " :No such nick/channel\n";
-    send(fd, response.c_str(), response.size(), 0);
+    send(fd, response.c_str(), response.size(), MSG_NOSIGNAL);
     return;
   }
-  std::cout << "fdClient :" << fdClient << std::endl;
-  send(fdClient, message.c_str(), message.size(), 0);
+  send(fdClient, message.c_str(), message.size(), MSG_NOSIGNAL);
 }
 
 // void ClientManager::printClient(int fd) const {

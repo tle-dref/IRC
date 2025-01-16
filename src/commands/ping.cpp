@@ -12,6 +12,6 @@ bool Server::validatePing(const TokenisedCommand &cmd, int fd) {
 void Server::doPong(const TokenisedCommand &cmd, int fd) {
   std::string token = cmd.getArguments()[0];
   std::string response = "PONG :" + token + "\r\n";
-  send(fd, response.c_str(), response.size(), 0);
+  send(fd, response.c_str(), response.size(), MSG_NOSIGNAL);
   std::cout << "Send PONG response: " << response;
 }

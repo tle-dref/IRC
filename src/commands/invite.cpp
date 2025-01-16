@@ -34,7 +34,7 @@ void Server::doInvite(const TokenisedCommand &cmd, int fd) {
 
   std::string inviteMsg = ":" + _clients.getNickname(fd) + " INVITE " +
                           targetName + " " + channelName + "\r\n";
-  send(targetFd, inviteMsg.c_str(), inviteMsg.length(), 0);
+  send(targetFd, inviteMsg.c_str(), inviteMsg.length(), MSG_NOSIGNAL);
 
   _channels.inviteUser(channelName, _clients.getClient(targetFd));
 }

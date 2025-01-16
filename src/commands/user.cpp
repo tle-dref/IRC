@@ -28,5 +28,5 @@ void Server::doUser(const TokenisedCommand &cmd, int fd) {
       client->nickname + " :This server was created today\r\n" +
       ":localhost 004 " + client->nickname + " localhost 1.0 i\r\n";
 
-  send(fd, welcomeMsg.c_str(), welcomeMsg.size(), 0);
+  send(fd, welcomeMsg.c_str(), welcomeMsg.size(), MSG_NOSIGNAL);
 }

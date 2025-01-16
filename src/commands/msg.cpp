@@ -13,6 +13,15 @@ bool Server::validatePrivmsg(const TokenisedCommand &cmd, int fd) {
 
 void Server::doPrivmsg(const TokenisedCommand &cmd, int fd) {
   std::string channelName = cmd.getArguments()[0];
+
+  std::cout << "channelName : " << channelName << " | fd : " << fd
+            << " | msg : " << cmd.getArguments()[1] << "" << std::endl;
+
+  if (channelName == "bot") {
+    botResponse(cmd.getArguments()[1], fd);
+    return;
+  }
+
   std::string::iterator it = channelName.begin();
   for (; it != channelName.end(); it++) {
     if (*it == '#') {

@@ -13,6 +13,6 @@ void Server::doCap(const TokenisedCommand &cmd, int fd) {
 
   if (subcmd == "LS") {
     std::string response = "CAP * LS :\r\n";
-    send(fd, response.c_str(), response.length(), 0);
+    send(fd, response.c_str(), response.length(), MSG_NOSIGNAL);
   }
 }
