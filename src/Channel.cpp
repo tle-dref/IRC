@@ -203,7 +203,7 @@ bool ChannelManager::isPasswordProtected(std::string channelName) {
 
 bool ChannelManager::isFull(std::string channelName) {
   return (_channels[channelName]->userLimit != -1 &&
-          _channels[channelName]->users.size() >
+          _channels[channelName]->users.size() >=
               (unsigned long long)_channels[channelName]->userLimit);
 }
 

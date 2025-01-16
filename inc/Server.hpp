@@ -6,7 +6,7 @@
 /*   By: dalebran <dalebran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/12 22:09:29 by gbruscan          #+#    #+#             */
-/*   Updated: 2025/01/16 06:56:25 by dalebran         ###   ########.fr       */
+/*   Updated: 2025/01/16 07:51:56 by dalebran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,8 +112,10 @@ public:
   void doT(std::string channelName, int sign, int fd);
   void doK(std::string channelName, int sign, int fd,
            const TokenisedCommand &cmd);
-  void doO(std::string channelName, int sign, int fd);
-  void doL(std::string channelName, int sign, int fd);
+  void doO(std::string channelName, int sign, int fd,
+           const TokenisedCommand &cmd);
+  void doL(std::string channelName, int sign, int fd,
+           const TokenisedCommand &cmd);
 };
 
 #endif
