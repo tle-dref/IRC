@@ -17,7 +17,7 @@ void Server::doPass(const TokenisedCommand &cmd, int fd) {
               << std::endl;
   } else {
     std::string errorMsg = "ERROR :Mot de passe incorrect\n";
-    send(fd, errorMsg.c_str(), errorMsg.size(), 0);
+    send(fd, errorMsg.c_str(), errorMsg.size(), MSG_NOSIGNAL);
     close(fd);
     epoll_ctl(epoll_fd, EPOLL_CTL_DEL, fd, NULL);
     // delete _clients[fd];

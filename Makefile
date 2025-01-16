@@ -1,7 +1,7 @@
 NAME        = ircserv
 
 CXX         = c++
-CXXFLAGS    = -Wall -Wextra -Werror -std=c++98 -I $(INCDIR)
+CXXFLAGS    = -Wall -Wextra -Werror -std=c++98 -g -I $(INCDIR)
 
 SRCDIR      = src
 INCDIR      = inc

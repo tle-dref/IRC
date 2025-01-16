@@ -6,7 +6,7 @@ bool Server::validateUser(const TokenisedCommand &cmd, int fd) {
   if (_clients.getClient(fd)->nickname.empty()) {
     std::string errorMsg =
         "ERROR :Vous devez définir un pseudonyme avec NICK avant USER\n";
-    send(fd, errorMsg.c_str(), errorMsg.size(), 0);
+    send(fd, errorMsg.c_str(), errorMsg.size(), MSG_NOSIGNAL);
     return false;
   }
   return cmd.getArguments().size() >= 4;

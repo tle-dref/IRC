@@ -6,7 +6,7 @@
 /*   By: dalebran <dalebran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/12 22:09:05 by gbruscan          #+#    #+#             */
-/*   Updated: 2025/01/15 22:02:11 by dalebran         ###   ########.fr       */
+/*   Updated: 2025/01/16 03:18:22 by dalebran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -257,15 +257,26 @@ void Server::handleClientMessage(const std::string &message, int fd) {
       cmd.print();
       std::cout << std::endl;
 
-      // Vérifier l'authentification sauf pour les commandes CAP et PASS
-      if (cmd.getCommand() != "CAP" && cmd.getCommand() != "PASS" &&
-          !_clients.getClient(fd)->isAuthenticated) {
-        std::string errorMsg =
-            "ERROR :Vous devez d'abord vous authentifier avec PASS\n";
-        send(fd, errorMsg.c_str(), errorMsg.size(), 0);
+      // Récupérer le client une seule fois
+      Client *client = _clients.getClient(fd);
+      if (client == NULL) {
+        std::cerr << "Erreur : Client avec fd " << fd << " non trouvé."
+                  << std::endl;
         continue;
       }
 
+      // Vérifier l'authentification sauf pour les commandes CAP et PASS
+      if (cmd.getCommand() != "CAP" && cmd.getCommand() != "PASS" &&
+          !client->isAuthenticated) {
+        std::string errorMsg =
+            "ERROR :Vous devez d'abord vous authentifier avec PASS\n";
+        if (send(fd, errorMsg.c_str(), errorMsg.size(), MSG_NOSIGNAL) == -1) {
+          std::cerr
+              << "Erreur : Échec de l'envoi du message d'erreur au client fd "
+              << fd << std::endl;
+        }
+        continue;
+      }
       dispatchCommand(_clients, _channels, cmd, fd);
     }
   }

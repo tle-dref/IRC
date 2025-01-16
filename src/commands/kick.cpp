@@ -31,7 +31,7 @@ bool Server::validateKick(const TokenisedCommand &cmd, int fd) {
     std::string errorMsg = ":" + _clients.getNickname(fd) + "!" +
                            _clients.getClientname(fd) + "@I.R.SIUSIU NOTICE " +
                            channel + " :User " + target + " does not exist\n";
-    send(fd, errorMsg.c_str(), errorMsg.size(), 0);
+    send(fd, errorMsg.c_str(), errorMsg.size(), MSG_NOSIGNAL);
     return false;
   }
 
