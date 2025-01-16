@@ -130,7 +130,7 @@ void error_432(int fd, std::string client, std::string target_nick) {
   // if (client == nullptr || !client->isConnected())
   // 	return;
   (void)target_nick;
-  std::string errorMsg = std::string(":") + SERVER_NAME + " 432 " + client + ":Erroneus nickname" + "\n";
+  std::string errorMsg = std::string(":") + SERVER_NAME + " 432 " + client + " :" + target_nick + ": nickname too long" "\n";
   send(fd, errorMsg.c_str(), errorMsg.size(), 0);
   std::cout << "432 ERR_ERRONEUSNICKNAME" << std::endl;
   return;
@@ -141,8 +141,7 @@ void error_433(int fd, std::string client, std::string target_nick) {
   // if (client == nullptr || !client->isConnected())
   // 	return;
 
-  std::string errorMsg = std::string(":") + SERVER_NAME + " 433 " + client +
-                         target_nick + ":Nickname is already in use" + "\n";
+  std::string errorMsg = std::string(":") + SERVER_NAME + " 433 " + client + " :" + target_nick + "\n";
   send(fd, errorMsg.c_str(), errorMsg.size(), 0);
   std::cout << "433 ERR_NICKNAMEINUSE" << std::endl;
   return;
