@@ -8,14 +8,13 @@ bool Server::validateQuit(const TokenisedCommand &cmd, int fd) {
 }
 
 void Server::doQuit(const TokenisedCommand &cmd, int fd) {
+  std::string arg;
   std::string quitMsg;
   if (!cmd.getArguments().empty()) {
-    quitMsg = cmd.getArguments()[0];
+    arg = cmd.getArguments()[0];
+  } else {
+    arg = "leaving";
   }
-  else {
-      quitMsg = "Leaving";
-  }
-
 
   const std::map<std::string, Channel *> &inChannel = _channels.getChannels();
   for (std::map<std::string, Channel *>::const_iterator it = inChannel.begin();
@@ -24,8 +23,8 @@ void Server::doQuit(const TokenisedCommand &cmd, int fd) {
               << std::endl;
     if (it->second && _channels.isUserInChannel(it->first, fd)) {
       quitMsg = ":" + _clients.getClient(fd)->nickname + "!" +
-                _clients.getClientname(fd) + "!@GLMRC QUIT " + ":" +
-                cmd.getArguments()[0] + "\r\n";
+                _clients.getClientname(fd) + "!@GLMRC QUIT " + ":" + arg +
+                "\r\n";
       _channels.notifyChannel(quitMsg, it->first);
     }
   }
@@ -33,6 +32,7 @@ void Server::doQuit(const TokenisedCommand &cmd, int fd) {
        it != inChannel.end(); ++it) {
     _channels.removeUser(it->first, fd);
   }
-   std::string msg = ":" + _clients.getClient(fd)->nickname + "!@GLMRC QUIT " + quitMsg + "\r\n";
-   _clients.removeClient(fd);
+  std::string msg = ":" + _clients.getClient(fd)->nickname + "!@GLMRC QUIT " +
+                    quitMsg + "\r\n";
+  _clients.removeClient(fd);
 }

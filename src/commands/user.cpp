@@ -16,14 +16,19 @@ void Server::doUser(const TokenisedCommand &cmd, int fd) {
   Client *client = _clients.getClient(fd);
 
   // Stocker les informations USER
+
   client->username = cmd.getArguments()[0];
-  client->hostname = cmd.getArguments()[2];
-  client->realname = cmd.getArguments()[3];
+  if (cmd.getArguments().size() >= 3) {
+    client->hostname = cmd.getArguments()[2];
+  }
+  if (cmd.getArguments().size() >= 4) {
+    client->hostname = cmd.getArguments()[3];
+  }
 
   // Envoyer le message de bienvenue
   std::string welcomeMsg =
-      ":localhost 001 " + client->nickname + " :Welcome to the GLMRC server " + client->username + "\r\n" +
-      ":localhost 002 " + client->nickname +
+      ":localhost 001 " + client->nickname + " :Welcome to the GLMRC server " +
+      client->username + "\r\n" + ":localhost 002 " + client->nickname +
       " :Your host is localhost, running version 1.0\r\n" + ":localhost 003 " +
       client->nickname + " :This server was created today\r\n" +
       ":localhost 004 " + client->nickname + " localhost 1.0 i\r\n";
