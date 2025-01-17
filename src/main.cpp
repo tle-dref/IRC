@@ -16,7 +16,6 @@ int main(int argc, char **argv) {
   ChannelManager channels;
 
   Server server(port, password);
-  server.createBot();
   server.run();
   return (0);
 }

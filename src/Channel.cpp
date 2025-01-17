@@ -5,7 +5,12 @@ Channel::Channel() : userLimit(-1), inviteOnly(false), topicRestricted(true) {}
 Channel::Channel(std::string name)
     : name(name), userLimit(-1), inviteOnly(false), topicRestricted(true) {}
 
-Channel::~Channel() {}
+Channel::~Channel() {
+    users.clear();
+    operators.clear();
+    banned.clear();
+    invited.clear();
+}
 
 void ChannelManager::printMyChannels(int fd) {
   std::cout << "Channels : ";

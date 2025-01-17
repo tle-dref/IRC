@@ -120,10 +120,9 @@ Server::~Server() {
       {
           if (_clients.userExists(it->first))
           {
-            std::cout << "Client déconnecté (fd: " << it->first << ")" << std::endl;
+            std::cout << "Client déconnecté (fd: " << it->first << ")" << _clients.getNickname(it->first) << std::endl;
             close(it->first);
-            if (it->second)
-                delete it->second;
+            delete it->second;
           }
       }
   }
@@ -132,14 +131,14 @@ Server::~Server() {
 void Server::createBot() {
   Client *bot;
 
-  bot = new Client();
-  bot->fd = 1000;
+  bot = new Client(1000);
   bot->nickname = "bot";
   bot->username = "bot";
   bot->hostname = "localhost";
   bot->realname = "Bot du serveur IRC";
   bot->isAuthenticated = true;
   _clients.addClient(bot);
+  std::cout << "Bot créé" << std::endl;
 }
 
 void Server::setupSocket() {
