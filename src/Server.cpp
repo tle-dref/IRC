@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gbruscan <gbruscan@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dalebran <dalebran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/12 22:09:05 by gbruscan          #+#    #+#             */
-/*   Updated: 2025/01/16 23:20:34 by gbruscan         ###   ########.fr       */
+/*   Updated: 2025/01/17 03:15:23 by dalebran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,10 @@
 #include <fcntl.h>
 #include <iostream>
 #include <netinet/in.h>
+#include <signal.h>
 #include <sstream>
 #include <sys/epoll.h>
 #include <unistd.h>
-#include <signal.h>
 
 struct Client;
 
@@ -113,18 +113,16 @@ Server::Server(int port, const std::string &password)
 Server::~Server() {
   close(server_fd);
   close(epoll_fd); // Fermeture de epoll_fd
-  if (!_clients.getClients().empty())
-  {
-      std::map<int, Client *>::iterator it = _clients.getClients().begin();
-      for (; it != _clients.getClients().end(); ++it)
-      {
-          if (_clients.userExists(it->first))
-          {
-            std::cout << "Client déconnecté (fd: " << it->first << ")" << _clients.getNickname(it->first) << std::endl;
-            close(it->first);
-            delete it->second;
-          }
+  if (!_clients.getClients().empty()) {
+    std::map<int, Client *>::iterator it = _clients.getClients().begin();
+    for (; it != _clients.getClients().end(); ++it) {
+      if (_clients.userExists(it->first)) {
+        std::cout << "Client déconnecté (fd: " << it->first << ")"
+                  << _clients.getNickname(it->first) << std::endl;
+        close(it->first);
+        delete it->second;
       }
+    }
   }
 }
 
@@ -197,9 +195,9 @@ void Server::run() {
   int ret;
 
   createBot();
-	signal(SIGINT, Server::sigInt_Hdl);
+  signal(SIGINT, Server::sigInt_Hdl);
 
-	while (sigStop == 0) {
+  while (sigStop == 0) {
     // Attendre les evenements sur les descripteurs
     ret = epoll_wait(epoll_fd, events, 10, -1); // 10 evenements max à gerer
     if (ret < 0) {
@@ -281,10 +279,18 @@ void Server::handleClientMessage(const std::string &message, int fd) {
 
   std::stringstream ss(message);
   std::string line;
+  int i = 0;
   while (std::getline(ss, line, '\n')) {
     if (line.empty())
       continue;
     cmd = tokenize(line);
+    if (cmd.getCommand() == "NICK" && i == 2 && !validateNick(cmd, fd)) {
+      while (ss >> line) {
+      }
+      doQuit(cmd, fd);
+      return;
+    }
+    i++;
     if (cmd.isValid()) {
       std::cout << "Processing line: " << line << std::endl;
       cmd.print();
@@ -313,11 +319,9 @@ void Server::handleClientMessage(const std::string &message, int fd) {
   }
 }
 
-void    Server::sigInt_Hdl(int signo)
-{
-    if (signo == SIGINT)
-	{
-        sigStop = true;
-		std::cerr << "\b\b  \b\b" << std::endl; // flex pour effacer ^C
-	}
+void Server::sigInt_Hdl(int signo) {
+  if (signo == SIGINT) {
+    sigStop = true;
+    std::cerr << "\b\b  \b\b" << std::endl; // flex pour effacer ^C
+  }
 }
