@@ -41,10 +41,19 @@ bool Server::validateKick(const TokenisedCommand &cmd, int fd) {
 void Server::doKick(const TokenisedCommand &cmd, int fd) {
   int targetFd = _clients.getFd(cmd.getArguments()[1]);
   std::string channelName = cmd.getArguments()[0];
+  std::string kickMsg;
+  std::string toKick;
 
-  std::string kickMsg = ":" + _clients.getClient(fd)->nickname + " KICK " +
-                        channelName + " " + cmd.getArguments()[1] + "\r\n";
-  std::string toKick = "PART " + channelName + "\r\n";
+  if (cmd.getArguments().size() < 3) {
+    kickMsg = ":" + _clients.getClient(fd)->nickname + " KICK " + channelName +
+              "\r\n";
+    toKick = "PART " + channelName + "\r\n";
+  } else {
+    kickMsg = ":" + _clients.getClient(fd)->nickname + " KICK " + channelName +
+              " :" + cmd.getArguments()[2] + "\r\n";
+    toKick = "PART " + channelName + " :" + cmd.getArguments()[2] + "\r\n";
+  }
+
   TokenisedCommand cmdToKick = tokenize(toKick);
   doPart(cmdToKick, targetFd);
 }

@@ -132,7 +132,7 @@ void error_432(int fd, std::string client, std::string target_nick) {
   (void)target_nick;
   std::string errorMsg = std::string(":") + SERVER_NAME + " 432 " + client +
                          " :" + target_nick +
-                         ": nickname too long"
+                         " :Erroneus nickname"
                          "\n";
   send(fd, errorMsg.c_str(), errorMsg.size(), MSG_NOSIGNAL);
   std::cout << "432 ERR_ERRONEUSNICKNAME" << std::endl;
