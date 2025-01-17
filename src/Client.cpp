@@ -11,13 +11,8 @@ Client::Client(int fd)
 Client::Client(std::string nickname)
     : nickname(nickname), username(""), hostname(""), isAuthenticated(false) {}
 
-<<<<<<< HEAD
-Client::~Client() {
-  //close (fd);
-}
-=======
+
 Client::~Client() {}
->>>>>>> addBot
 
 void ClientManager::addClient(Client *user) { _clients[user->fd] = user; }
 
