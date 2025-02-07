@@ -21,10 +21,9 @@ Ce projet a été réalisé dans le cadre de l'École 42 pour comprendre les **p
 ```sh
 git clone https://github.com/tle-dref/ft_irc.git
 cd ft_irc
+```
 🔨 Compiler
-sh
-Copier
-Modifier
+```sh
 make
 ```
 🚀 Lancer le serveur IRC
